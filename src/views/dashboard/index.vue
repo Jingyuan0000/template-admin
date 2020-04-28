@@ -1,14 +1,15 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">观测业务平台</div>
-    <el-row :gutter="20">
-      <!-- <el-col :span="8"><div class="grid-content bg-purple" /></el-col> -->
-      <el-col :span="8"><div class="grid-content bg-purple" /><windDirecStart /></el-col>
-      <el-col :span="8"><div class="grid-content bg-purple" /><windDirecAvg /></el-col>
-      <el-col :span="8"><div class="grid-content bg-purple" /><windDirectEnd /></el-col>
-    </el-row>
+    <el-card>
+      <el-row>
+        <el-col :span="8"><div class="grid-content bg-purple" /><windDirecStart /></el-col>
+        <el-col :span="8"><div class="grid-content bg-purple" /><windDirecAvg /></el-col>
+        <el-col :span="8"><div class="grid-content bg-purple" /><windDirectEnd /></el-col>
+      </el-row>
+    </el-card>
 
-    <el-row :gutter="20">
+    <!-- <el-row :gutter="20">
       <el-col :span="8"><div class="" />
         <el-table
           :data="tableData1"
@@ -82,8 +83,57 @@
         </el-table>
       </el-col>
       <el-col :span="8"><div class="" /></el-col>
+    </el-row> -->
+    <el-row class="param-area">
+      <el-col :span="8">
+        <el-table class="common-table" name="tb1" :cell-style="CellStyle" :header-cell-style="HeaderColor" :data="tableData1">
+          <el-table-column label="参数" prop="param" />
+          <el-table-column label="2分钟内">
+            <el-table-column label="最大值" prop="max2min" />
+            <el-table-column label="最小值" prop="min2min" />
+            <el-table-column label="平均值" prop="avg2min" />
+          </el-table-column>
+          <el-table-column label="10分钟内">
+            <el-table-column label="最大值" prop="max10min" />
+            <el-table-column label="最小值" prop="min10min" />
+            <el-table-column label="平均值" prop="avg10min" />
+          </el-table-column>
+        </el-table>
+      </el-col>
+      <el-col :span="8">
+        <el-table name="tb2" :cell-style="CellStyle" :header-cell-style="HeaderColor" :data="tableData1">
+          <el-table-column label="参数" prop="param" />
+          <el-table-column label="2分钟内">
+            <el-table-column label="最大值" prop="max2min" />
+            <el-table-column label="最小值" prop="min2min" />
+            <el-table-column label="平均值" prop="avg2min" />
+          </el-table-column>
+          <el-table-column label="10分钟内">
+            <el-table-column label="最大值" prop="max10min" />
+            <el-table-column label="最小值" prop="min10min" />
+            <el-table-column label="平均值" prop="avg10min" />
+          </el-table-column>
+        </el-table>
+      </el-col>
+      <el-col :span="8">
+        <el-table name="tb2" :cell-style="CellStyle" :header-cell-style="HeaderColor" :data="tableData1">
+          <el-table-column label="参数" prop="param" />
+          <el-table-column label="2分钟内">
+            <el-table-column label="最大值" prop="max2min" />
+            <el-table-column label="最小值" prop="min2min" />
+            <el-table-column label="平均值" prop="avg2min" />
+          </el-table-column>
+          <el-table-column label="10分钟内">
+            <el-table-column label="最大值" prop="max10min" />
+            <el-table-column label="最小值" prop="min10min" />
+            <el-table-column label="平均值" prop="avg10min" />
+          </el-table-column>
+        </el-table>
+      </el-col>
+
     </el-row>
-    <el-row :gutter="20">
+
+    <!-- <el-row :gutter="20">
       <el-col :span="6" class="wind-info">十分钟最强灯光RVR</el-col>
       <el-col :span="2" class="wind-info">P2000  m</el-col>
       <el-col :span="6" class="wind-info">灯光级别 </el-col>
@@ -106,7 +156,7 @@
       <el-col :span="2" class="wind-info"> 16 cd/m²</el-col>
       <el-col :span="6" class="wind-info">十分钟光学能见度</el-col>
       <el-col :span="2" class="wind-info">1400  m</el-col>
-    </el-row>
+    </el-row> -->
     <!-- <el-row>
         <Echarts />
       </el-row> -->
@@ -130,44 +180,29 @@ export default {
   data() {
     return {
       tableData1: [{
-        time: '风向',
-        max: '340 °',
-        avg: '340 °',
-        min: '330 °'
-      }, {
-        time: '风速',
-        max: '1 mps',
-        avg: '1 mps',
-        min: '1 mps°'
-      }],
-      tableData2: [{
-        time: '风向',
-        max: '10 °',
-        avg: '330 °',
-        min: '270 °'
-      }, {
-        time: '风速',
-        max: '4 mps',
-        avg: '2 mps',
-        min: '1 mps°'
-      }],
-      tableData3: [{
-        time: '风向',
-        max: '20 °',
-        avg: '320 °',
-        min: '280 °'
-      }, {
-        time: '风速',
-        max: '3 mps',
-        avg: '2 mps',
-        min: '0 mps°'
+        param: '风向',
+        max2min: '340 °',
+        min2min: '330 °',
+        avg2min: '340 °',
+        max10min: '20 °',
+        avg10min: '320 °',
+        min10min: '280 °'
       }]
+
     }
   },
   computed: {
     ...mapGetters([
       'name'
     ])
+  },
+  methods: {
+    CellStyle({ row, rowIndex }) {
+      return 'text-align:center;'
+    },
+    HeaderColor({ row, column, rowIndex, columnIndex }) {
+      return 'background-color:#eee;color:#999;font-wight:30;font-size:16px;text-align:center;border-color:#ddd'
+    }
   }
 
 }
@@ -184,29 +219,37 @@ export default {
     text-align: center;
   }
 }
-
+.dashboard-text {
+  padding-bottom: 30px;
+  font-size: 36px;
+  font-weight: bold;
+  color: #999;
+}
+.param-area {
+  margin-top: 30px;
+}
   .el-row {
     margin-bottom: 20px;
     &:last-child {
       margin-bottom: 0;
     }
   }
-  .el-col {
-    border-radius: 4px;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-  }
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-  }
-  .wind-info {
-    border: 1px solid #eee;
-    padding: 6px 20px;
-  }
+  // .el-col {
+  //   border-radius: 4px;
+  // }
+  // .bg-purple-light {
+  //   background: #e5e9f2;
+  // }
+  // .grid-content {
+  //   border-radius: 4px;
+  //   min-height: 36px;
+  // }
+  // .row-bg {
+  //   padding: 10px 0;
+  //   background-color: #f9fafc;
+  // }
+  // .wind-info {
+  //   border: 1px solid #eee;
+  //   padding: 6px 20px;
+  // }
 </style>
