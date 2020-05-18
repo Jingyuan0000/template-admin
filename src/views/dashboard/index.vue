@@ -1,6 +1,6 @@
 <template>
-  <div class="dashboard-container">
-    <div class="dashboard-text">观测业务平台</div>
+  <div class="dashboard-container dashboard-container__home">
+    <!-- <div class="dashboard-text">观测业务平台</div> -->
     <el-card class="gauge-area">
       <el-row>
         <el-col :span="8"><div class="grid-content bg-purple" /><windDirecStart /></el-col>
@@ -244,6 +244,9 @@ export default {
   font-size: 26px;
   font-weight: bold;
   color: #999;
+}
+.dashboard-container__home {
+  margin-top: 0;
 }
 .gauge-area {
   padding-bottom: 0;
