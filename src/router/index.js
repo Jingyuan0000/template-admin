@@ -51,91 +51,189 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '目录', icon: 'dashboard' }
+      meta: { title: '观测主页', icon: 'dashboard' }
     }]
   },
 
+  // {
+  //   path: '/form',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Form',
+  //       component: () => import('@/views/form/index'),
+  //       meta: { title: 'Form', icon: 'wind' }
+  //     }
+  //   ]
+  // },
   {
-    path: '/form',
+    path: '/wind',
     component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
+    redirect: '/wind',
+    children: [{
+      path: 'index',
+      name: 'Wind',
+      component: () => import('@/views/wind/index'),
+      meta: { title: '风', icon: 'wind' }
+    }]
   },
+  {
+    path: '/cloud',
+    component: Layout,
+    redirect: '/wind',
+    children: [{
+      path: 'index',
+      name: 'Cloud',
+      component: () => import('@/views/cloud/index'),
+      meta: { title: '云', icon: 'cloud' }
+    }]
+  },
+  {
+    path: '/visibility',
+    component: Layout,
+    redirect: '/visibility',
+    children: [{
+      path: 'index',
+      name: 'Visibility',
+      component: () => import('@/views/visibility/index'),
+      meta: { title: '能见度', icon: 'visibility' }
+    }]
+  },
+  {
+    path: '/pressure',
+    component: Layout,
+    redirect: '/pressure',
+    children: [{
+      path: 'index',
+      name: 'Pressure',
+      component: () => import('@/views/pressure/index'),
+      meta: { title: '气压', icon: 'pressure' }
+    }]
+  },
+  {
+    path: '/temp',
+    component: Layout,
+    redirect: '/temp',
+    children: [{
+      path: 'index',
+      name: 'Temp',
+      component: () => import('@/views/temp/index'),
+      meta: { title: '温度', icon: 'temp' }
+    }]
+  },
+  {
+    path: '/humidity',
+    component: Layout,
+    redirect: '/humidity',
+    children: [{
+      path: 'index',
+      name: 'Humidity',
+      component: () => import('@/views/humidity/index'),
+      meta: { title: '湿度', icon: 'humidity' }
+    }]
+  },
+  {
+    path: '/rain',
+    component: Layout,
+    redirect: '/rain',
+    children: [{
+      path: 'index',
+      name: 'Rain',
+      component: () => import('@/views/rain/index'),
+      meta: { title: '降水', icon: 'rain' }
+    }]
+  },
+  {
+    path: '/weather',
+    component: Layout,
+    redirect: '/weather',
+    children: [{
+      path: 'index',
+      name: 'Weather',
+      component: () => import('@/views/weather/index'),
+      meta: { title: '特殊天气', icon: 'unexpected' }
+    }]
+  },
+  {
+    path: '/broadcast',
+    component: Layout,
+    redirect: '/broadcast',
+    children: [{
+      path: 'index',
+      name: 'Broadcast',
+      component: () => import('@/views/broadcast/index'),
+      meta: { title: '播报天气', icon: 'trumpet' }
+    }]
+  },
+  // {
+  //   path: '/nested',
+  //   component: Layout,
+  //   redirect: '/nested/menu1',
+  //   name: 'Nested',
+  //   meta: {
+  //     title: 'Nested',
+  //     icon: 'nested'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'menu1',
+  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
+  //       name: 'Menu1',
+  //       meta: { title: 'Menu1' },
+  //       children: [
+  //         {
+  //           path: 'menu1-1',
+  //           component: () => import('@/views/nested/menu1/menu1-1'),
+  //           name: 'Menu1-1',
+  //           meta: { title: 'Menu1-1' }
+  //         },
+  //         {
+  //           path: 'menu1-2',
+  //           component: () => import('@/views/nested/menu1/menu1-2'),
+  //           name: 'Menu1-2',
+  //           meta: { title: 'Menu1-2' },
+  //           children: [
+  //             {
+  //               path: 'menu1-2-1',
+  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
+  //               name: 'Menu1-2-1',
+  //               meta: { title: 'Menu1-2-1' }
+  //             },
+  //             {
+  //               path: 'menu1-2-2',
+  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
+  //               name: 'Menu1-2-2',
+  //               meta: { title: 'Menu1-2-2' }
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           path: 'menu1-3',
+  //           component: () => import('@/views/nested/menu1/menu1-3'),
+  //           name: 'Menu1-3',
+  //           meta: { title: 'Menu1-3' }
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       path: 'menu2',
+  //       component: () => import('@/views/nested/menu2/index'),
+  //       meta: { title: 'menu2' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
-      },
-      {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
-      }
-    ]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
-      }
-    ]
-  },
+  // {
+  //   path: 'external-link',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
+  //       meta: { title: 'External Link', icon: 'link' }
+  //     }
+  //   ]
+  // },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

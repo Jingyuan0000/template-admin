@@ -27,7 +27,7 @@ export default {
         min: 0,
         max: 360,
         data: [{
-          name: '风向',
+          name: '',
           value: 330
         }],
         splitNumber: 12,
@@ -37,17 +37,24 @@ export default {
         },
         axisTick: {
           show: true,
-          length: 10,
+          length: 6,
           lineStyle: {
             color: '#333'
           }
         },
         axisLabel: {
-          show: true
+          show: true,
+          fontSize: 10
         },
         poiter: {
           length: '40%',
           width: 4
+        },
+        detail: { formatter: '{value}%',
+          textStyle: {
+            'fontSize': 16
+          },
+          offsetCenter: ['4%', '20%']
         }
 
       }]

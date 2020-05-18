@@ -27,7 +27,7 @@ export default {
         min: 0,
         max: 360,
         data: [{
-          name: '风向',
+          // name: '风向',
           value: 320
         }],
         splitNumber: 12,
@@ -37,17 +37,24 @@ export default {
         },
         axisTick: {
           show: true,
-          length: 10,
+          length: 6,
           lineStyle: {
             color: '#333'
           }
         },
         axisLabel: {
-          show: true
+          show: true,
+          fontSize: 10
         },
         poiter: {
-          length: '40%',
-          width: 4
+          length: '20%',
+          width: 2
+        },
+        detail: { formatter: '{value}%',
+          textStyle: {
+            'fontSize': 16
+          },
+          offsetCenter: ['4%', '20%']
         }
 
       }]
@@ -65,7 +72,7 @@ export default {
 }
 .wind-gauge {
   width: 600px;
-  height: 400px;
+  height: 280px;
 
 }
 </style>
