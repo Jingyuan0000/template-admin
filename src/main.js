@@ -15,6 +15,9 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+import $ from 'jquery'
+// import SocketIO from 'socket.io-client'
+// import VueSocketIO from 'vue-socket.io'
 
 /**
  * If you don't want to use mock-server
@@ -34,6 +37,10 @@ Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
 
+// Vue.use(new VueSocketIO({
+//   debug: true,
+//   connection: SocketIO('http://127.0.0.1:8443/login')
+// }))
 Vue.config.productionTip = false
 
 new Vue({
@@ -41,6 +48,16 @@ new Vue({
   router,
   store,
   render: h => h(App)
+  // sockets: {
+  //   connect: function() {
+  //     console.log('socket connetcted')
+  //   },
+  //   res: function(val) {
+  //     console.log('接收到服务端消息', val)
+  //   }
+  // }
 })
 
 Vue.prototype.$echarts = echarts
+Vue.prototype.$ = $
+

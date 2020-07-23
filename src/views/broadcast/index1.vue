@@ -4,11 +4,6 @@
       <input id="ttsText" type="text">
       <input id="tts_btn" type="button" value="播放" @click="doTTS">
       <input id="zt_btn" type="button" value="暂停" @click="doZT">
-
-      <audio id="xf" autoplay="autoplay">
-        <source :src="audioData">
-      </audio>
-      <input id="tts_btn" type="button" value="播放在线合成" @click="doXF">
     </div>
     <div id="wrapp" />
   </div>
@@ -16,9 +11,12 @@
 </template>
 <script>
 import CryptoJS from 'crypto-js'
-// import fs from 'fs'
+import WebSocket from 'ws'
+import fs from 'fs'
 
-// 系统配置
+var date = (new Date().toUTCString())
+// 设置当前临时状态为初始化
+
 const config = {
   // 请求地址
   hostUrl: 'wss://tts-api.xfyun.cn/v2/tts',
@@ -29,31 +27,29 @@ const config = {
   apiSecret: '06e41594bf03cd60e32409b3d7187046',
   // 在控制台-我的应用-在线语音合成（流式版）获取
   apiKey: '140ace321786ed56adcc9014dc847881',
-  text: '你好这是一个兔头兔兔在测试  Hi this is a rabbit testing',
+  text: '你好这是一个兔头在测试  Hi this is a rabbit testing',
   uri: '/v2/tts'
 }
+
 export default {
   data() {
     return {
       textVal: '911',
       ss: '',
-      path: '',
-      socket: '',
-      audioData: ''
+      // wssUrl: '',
+      websocket: null
     }
   },
-  // created() {
-  //   this.initWebsocket()
-  // },
+  created() {
+    this.initWebsocket()
+  },
   destroyed() {
-    this.socket.onclose = this.close()
+    this.websocket.close()
   },
   mounted() {
-    // 获取当前时间 RFC1123格式
-    const date = (new Date().toUTCString())
-    // 设置当前临时状态为初始化
-    this.path = config.hostUrl + '?authorization=' + this.getAuthStr(date) + '&date=' + date + '&host=' + config.host
-    this.init()
+    this.websocketonopen()
+    this.websocketonmessage()
+    this.websocketclose()
   },
   methods: {
     doTTS() {
@@ -70,61 +66,60 @@ export default {
       var ttsAudio = document.getElementById('wrapp_aud')
       ttsAudio.pause()
     },
-    doXF() {
-      var xfAudio = document.getElementById('xf')
-      xfAudio.play
+    initWebsocket() {
+      const wsUrl = config.hostUrl + '?authorization=' + this.getAuthStr(date) + '&date=' + date + '&host=' + config.host
+      this.websocket = new WebSocket(wsUrl)
+      this.websocket.onmessage = this.websocketonmessage
+      this.websocket.onopen = this.websocketonopen
+      this.websocket.close = this.websocketclose
+      this.websocket.send = this.websocketsend
     },
-    init() {
-      if (typeof (WebSocket) === 'undefined') {
-        alert('您的浏览器不支持socket')
-      } else {
-        this.socket = new WebSocket(this.path)
-        this.socket.onopen = this.open
-        this.socket.onerror = this.error
-        this.socket.onmessage = this.getMessage
+    websocketonopen() { // 连接建立之后执行send方法发送数据
+      console.log('websocket connect!')
+      this.send()
+      // 如果之前保存过音频文件，删除之
+      if (fs.existsSync('./test.pcm')) {
+        fs.unlink('./test.pcm', (err) => {
+          if (err) {
+            console.log('remove error: ' + err)
+          }
+        })
       }
     },
-    // websocket方法
-    open() {
-      console.log('socket连接成功')
-      this.sendText()
-      // 如果之前保存过音频文件，删除之
-      // if (fs.existsSync('./test.pcm')) {
-      //   fs.unlink('./test.pcm', (err) => {
-      //     if (err) {
-      //       console.log('remove error: ' + err)
-      //     }
-      //   })
-      // }
+    websocketonerror() { // 连接建立失败重连
+      this.initWebSocket()
     },
-    error() {
-      console.log('socket连接错误')
-    },
-    getMessage(res) {
-      // console.log('res1', res.data)
-      const result = JSON.parse(res.data)
-      console.log('res2', result.code, result.message, result.data)
-      if (result.code !== 0) {
-        console.log('error' + result.code + res.data.message)
-        this.close()
+    websocketonmessage(data, err) { // 数据接收
+      // const redata = JSON.parse(e.data)
+      if (err) {
+        console.log('message error: ' + err)
         return
       }
-      const audio = result.data.audio
+
+      const res = JSON.parse(data)
+
+      if (res.code !== 0) {
+        console.log(`${res.code}: ${res.message}`)
+        this.websocketclose()
+        return
+      }
+
+      const audio = res.data.audio
       const audioBuf = Buffer.from(audio, 'base64')
 
       this.save(audioBuf)
-      // if (result.code === 0 && result.data.status === 2) {
-      //   this.close()
-      // }
+
+      if (res.code === 0 && res.data.status === 2) {
+        this.websocketclose()
+      }
     },
-    send(params) {
-      this.socket.send(params)
+    websocketsend(Data) { // 数据发送
+      this.websocketsend(Data)
     },
-    close() {
-      console.log('socket已经关闭')
+    websocketclose(e) { // 关闭
+      console.log('断开连接', e)
     },
-    // 鉴权签名
-    getAuthStr(date) {
+    getAuthStr(date) { // 鉴权签名
       const signatureOrigin = `host: ${config.host}\ndate: ${date}\nGET ${config.uri} HTTP/1.1`
       const signatureSha = CryptoJS.HmacSHA256(signatureOrigin, config.apiSecret)
       const signature = CryptoJS.enc.Base64.stringify(signatureSha)
@@ -132,8 +127,7 @@ export default {
       const authStr = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(authorizationOrigin))
       return authStr
     },
-    // 传输数据
-    sendText() {
+    send() {
       const frame = {
         // 填充common
         'common': {
@@ -153,16 +147,22 @@ export default {
           'status': 2
         }
       }
-      this.send(JSON.stringify(frame))
+      console.log('frame', frame)
+      this.websocketsend(JSON.stringify(frame))
+      this.websocket.close()
     },
-    // 保存文件
     save(data) {
-      console.log('进入save')
-      // console.log('声音文件', data.toString())
-      const audioBuf = Buffer.from(data, 'base64')
-      this.audioData = 'data:audio/wav;base64' + audioBuf
-      console.log('audioBuf', audioBuf)
+      fs.writeFile('./demo.mp3', data, { flag: 'a' }, (err) => {
+        if (err) {
+          console.log('save error: ' + err)
+          return
+        }
+
+        console.log('文件保存成功')
+      })
     }
+
   }
+
 }
 </script>

@@ -1,6 +1,7 @@
 'use strict'
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
+const WebpackDevServer = require('webpack-dev-server')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -14,6 +15,7 @@ const name = defaultSettings.title || 'vue Admin Template' // page title
 // You can change the port by the following methods:
 // port = 9528 npm run dev OR npm run dev --port = 9528
 const port = process.env.port || process.env.npm_config_port || 9528 // dev port
+console.log('port', port)
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -36,7 +38,23 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js')
+    proxy: {
+      [process.env.VUE_APP_BASE_API]: {
+        // target: `http://127.0.0.1:8443/login`,
+        target: `http://erp.ouenyione.com`,
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API]: ''
+        }
+      },
+      '/socket.io': {
+        target: 'http://127.0.0.1:8443/login',
+        ws: true,
+        changeOrigin: true
+      }
+
+    }
+    // before: require('./mock/mock-server.js')
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
@@ -46,7 +64,14 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
-    }
+    },
+    // plugins: [
+    //   new WebpackDevServer.ProvidePlugin({
+    //     $: "jquery",
+    //     jQuery: "jquery",
+    //     "windows.jQuery": "jquery"
+    //   })
+    // ]
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test

@@ -71,6 +71,7 @@ export const constantRoutes = [
     path: '/wind',
     component: Layout,
     redirect: '/wind',
+    alwaysShow: true,
     children: [{
       path: 'index',
       name: 'Wind',
@@ -163,7 +164,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'Broadcast',
       component: () => import('@/views/broadcast/index'),
-      meta: { title: '播报天气', icon: 'trumpet' }
+      meta: { title: '播报天气', icon: 'trumpet', role: ['super_editor'] }
     }]
   },
   // {
