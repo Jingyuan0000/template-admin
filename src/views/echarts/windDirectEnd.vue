@@ -28,7 +28,7 @@ export default {
         max: 360,
         data: [{
           // name: '风向',
-          value: 320
+          value: parseInt(this.direction3)
         }],
         splitNumber: 12,
         axisLine: {
@@ -50,7 +50,7 @@ export default {
           length: '20%',
           width: 2
         },
-        detail: { formatter: '{value}%',
+        detail: {          formatter: '{value}%',
           textStyle: {
             'fontSize': 16
           },
@@ -61,19 +61,20 @@ export default {
 
     }
     windEnd.setOption(option3)
-  }
+  },
+  props: [
+    "direction3"
+  ]
 }
 </script>
 <style>
 .gauge-container {
   display: flex;
   flex-direction: row;
-
 }
 .wind-gauge {
   width: 600px;
   height: 280px;
-
 }
 </style>
 

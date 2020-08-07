@@ -14,7 +14,7 @@ export default {
     const windStart = this.$echarts.init(this.$refs.runwayStart)
     const option1 = {
       title: {
-        text: '跑道起点风向',
+        text: '风向',
         left: 'center'
       },
       series: [{
@@ -27,7 +27,7 @@ export default {
         max: 360,
         data: [{
           name: '',
-          value: 340
+          value: parseInt(this.direction1)
         }],
         splitNumber: 12,
         axisLine: {
@@ -49,7 +49,7 @@ export default {
           length: '40%',
           width: 4
         },
-        detail: { formatter: '{value}%',
+        detail: {          formatter: '{value}%',
           textStyle: {
             'fontSize': 16
           },
@@ -61,7 +61,17 @@ export default {
     }
 
     windStart.setOption(option1)
-  }
+  },
+  props: [
+    "direction1"
+  ]
 }
 </script>
+
+<style scoped>
+.wind-gauge {
+  width: 280px;
+  height: 280px;
+}
+</style>
 

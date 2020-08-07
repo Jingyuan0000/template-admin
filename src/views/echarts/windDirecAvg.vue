@@ -11,8 +11,15 @@
 </template>
 <script>
 export default {
+  // watch: {
+  //   direction2: function (newVal, oldVal) {
+  //     console.log('newVal', newVal, typeof (newVal), 'oldVal', oldVal)
+  //     this.direction2 = newVal
+  //   }
+  // },
   mounted() {
     const windAverage = this.$echarts.init(this.$refs.runwayAverage)
+
 
     const option2 = {
       title: {
@@ -28,7 +35,7 @@ export default {
         max: 360,
         data: [{
           name: '',
-          value: 330
+          value: this.direction2
         }],
         splitNumber: 12,
         axisLine: {
@@ -50,7 +57,7 @@ export default {
           length: '40%',
           width: 4
         },
-        detail: { formatter: '{value}%',
+        detail: {          formatter: '{value}%',
           textStyle: {
             'fontSize': 16
           },
@@ -60,9 +67,13 @@ export default {
       }]
 
     }
-
     windAverage.setOption(option2)
-  }
+
+  },
+  props: [
+    "direction2"
+  ]
+
 }
 </script>
 
