@@ -52,7 +52,7 @@ export default {
 　　.mailTable,
 .mailTable tr,
 .mailTable tr td {
-  border: 1px solid #e6eaee;
+  /* border: 1px solid #e6eaee; */
   padding: 18px;
   color: #336699;
 }
@@ -61,8 +61,8 @@ export default {
   color: #71787e;
 }
 　　.mailTable tr td {
-  border: 1px solid #e6eaee;
-  width: 150px;
+  /* border: 1px solid #e6eaee; */
+  width: 130px;
   height: 35px;
   line-height: 35px;
   box-sizing: border-box;

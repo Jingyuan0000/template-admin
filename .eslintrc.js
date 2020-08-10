@@ -209,9 +209,12 @@
 module.exports = {
   root: true,
   parserOptions: {
-    sourceType: 'module'
+    sourceType: 'module',
+    parser: "babel-eslint",
   },
+
   parser: "vue-eslint-parser",
+
   env: {
     browser: true,
     node: true,

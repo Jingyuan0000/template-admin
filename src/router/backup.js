@@ -55,6 +55,96 @@ export const constantRoutes = [
     }]
   },
 
+  // {
+  //   path: '/form',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Form',
+  //       component: () => import('@/views/form/index'),
+  //       meta: { title: 'Form', icon: 'wind' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/wind',
+  //   component: Layout,
+  //   redirect: '/wind',
+  //   alwaysShow: true,
+  //   children: [{
+  //     path: 'index',
+  //     name: 'Wind',
+  //     component: () => import('@/views/wind/index'),
+  //     meta: { title: '风', icon: 'wind' }
+  //   }]
+  // },
+  // {
+  //   path: '/cloud',
+  //   component: Layout,
+  //   redirect: '/wind',
+  //   children: [{
+  //     path: 'index',
+  //     name: 'Cloud',
+  //     component: () => import('@/views/cloud/index'),
+  //     meta: { title: '云', icon: 'cloud' }
+  //   }]
+  // },
+  // {
+  //   path: '/visibility',
+  //   component: Layout,
+  //   redirect: '/visibility',
+  //   children: [{
+  //     path: 'index',
+  //     name: 'Visibility',
+  //     component: () => import('@/views/visibility/index'),
+  //     meta: { title: '能见度', icon: 'visibility' }
+  //   }]
+  // },
+  // {
+  //   path: '/pressure',
+  //   component: Layout,
+  //   redirect: '/pressure',
+  //   children: [{
+  //     path: 'index',
+  //     name: 'Pressure',
+  //     component: () => import('@/views/pressure/index'),
+  //     meta: { title: '气压', icon: 'pressure' }
+  //   }]
+  // },
+  // {
+  //   path: '/temp',
+  //   component: Layout,
+  //   redirect: '/temp',
+  //   children: [{
+  //     path: 'index',
+  //     name: 'Temp',
+  //     component: () => import('@/views/temp/index'),
+  //     meta: { title: '温度', icon: 'temp' }
+  //   }]
+  // },
+  // {
+  //   path: '/humidity',
+  //   component: Layout,
+  //   redirect: '/humidity',
+  //   children: [{
+  //     path: 'index',
+  //     name: 'Humidity',
+  //     component: () => import('@/views/humidity/index'),
+  //     meta: { title: '湿度', icon: 'humidity' }
+  //   }]
+  // },
+  // {
+  //   path: '/rain',
+  //   component: Layout,
+  //   redirect: '/rain',
+  //   children: [{
+  //     path: 'index',
+  //     name: 'Rain',
+  //     component: () => import('@/views/rain/index'),
+  //     meta: { title: '降水', icon: 'rain' }
+  //   }]
+  // },
   {
     path: '/weather',
     component: Layout,
