@@ -6,9 +6,15 @@
   >
     <tr v-for="index in rowCount">
       <td class="column">{{tableData[index*2-2].name}}</td>
-      <td>{{tableData[index*2-2].value}}</td>
+      <td
+        :class="'tag' + (index+1)"
+        class="td-grid"
+      >{{tableData[index*2-2].value}}</td>
       <td class="column">{{tableData[index*2-1] !== undefined ? tableData[index*2-1].name : ''}}</td>
-      <td>{{tableData[index*2-1] !== undefined ? tableData[index*2-1].value : ''}}</td>
+      <td
+        :class="'tag-even' + (index+1)"
+        class="td-grid"
+      >{{tableData[index*2-1] !== undefined ? tableData[index*2-1].value : ''}}</td>
     </tr>
   </table>
   <table
@@ -20,7 +26,10 @@
       <td class="column">{{tableData[index-1].name}}</td>
       <td>{{tableData[index-1].value}}</td>
       <td class="column">{{tableData[rowCount+index-1] !== undefined ? tableData[rowCount+index-1].name : ''}}</td>
-      <td>{{tableData[rowCount+index-1] !== undefined ? tableData[rowCount+index-1].value : ''}}</td>
+      <td
+        :class="'tag' + (index)"
+        class="td-grid"
+      >{{tableData[rowCount+index-1] !== undefined ? tableData[rowCount+index-1].value : ''}}</td>
     </tr>
   </table>
 </template>
@@ -71,5 +80,79 @@ export default {
 　　.mailTable tr td.column {
   background-color: #eff3f6;
   color: #393c3e;
+}
+
+.tag1 {
+  background: #17a2b8;
+  /* background: linear-gradient(
+   to right,
+  rgba(12, 210, 227, 0.2) 0%,
+    rgba(62, 210, 227, 0.2) 100%
+  ); */
+}
+.tag2 {
+  background: #6f42c1;
+  /* background: linear-gradient(
+  to right,
+ rgba(63, 121, 241, 0.2) 0%,
+  rgba(63, 121, 241, 0.2) 100%
+  ); */
+}
+.tag3 {
+  background: #e83e8c;
+}
+.tag4 {
+  background: #dc3545;
+}
+.tag5 {
+  background: #fd7e14;
+}
+
+.tag6 {
+  background: #ffc107;
+}
+.tag7 {
+  background: #007bff;
+}
+
+.tag8 {
+  background: #28a745;
+}
+.td-grid {
+  opacity: 0.9;
+  color: #fff !important;
+}
+
+.tag-even1 {
+  background: #17a2b8;
+  /* background: linear-gradient(
+   to right,
+  rgba(12, 210, 227, 0.2) 0%,
+    rgba(62, 210, 227, 0.2) 100%
+  ); */
+}
+.tag-even2 {
+  background: #6f42c1;
+  /* background: linear-gradient(
+  to right,
+ rgba(63, 121, 241, 0.2) 0%,
+  rgba(63, 121, 241, 0.2) 100%
+  ); */
+}
+.tag-even3 {
+  background: #e83e8c;
+}
+.tag-even4 {
+  background: #dc3545;
+}
+.tag-even5 {
+  background: #fd7e14;
+}
+
+.tag-even6 {
+  background: #ffc107;
+}
+.tag-even7 {
+  background: #007bff;
 }
 </style>

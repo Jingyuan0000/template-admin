@@ -1,7 +1,5 @@
 <template>
   <div class="line-container">
-    <!-- <div class="line"></div>
-    <div class="line"></div> -->
 
     <div
       id="myCharts"
@@ -22,7 +20,7 @@ export default {
     const options = {
       title: {
         text: '10分钟内气压变化', // 图表顶部的标题
-        subtext: '模拟数据' // 副标题
+        // subtext: '模拟数据' // 副标题
       },
       tooltip: { // 鼠标悬浮框的提示文字
         trigger: 'axis'
@@ -45,22 +43,17 @@ export default {
         {
           name: '气压',
           type: 'line', // pie->饼状图  line->折线图  bar->柱状图
-          data: [11, 11, 14, 13, 12, 13, 10, 11, 11, 11],
+          data: this.pressure,
           lineStyle: {
             color: 'rgb(220, 87, 18)'
           }
         }
-        // {
-        //   name: '',
-        //   type: 'line', // pie->饼状图  line->折线图  bar->柱状图
-        //   data: [1, -2, 2, 5, 3, 2, 0, 1, 0, 0]
-        // }
       ]    }
 
     const options2 = {
       title: {
         text: '10分钟内温度变化', // 图表顶部的标题
-        subtext: '模拟数据' // 副标题
+        // subtext: '模拟数据' // 副标题
       },
       tooltip: { // 鼠标悬浮框的提示文字
         trigger: 'axis'
@@ -71,7 +64,7 @@ export default {
       xAxis: [{ // x轴坐标数据
         type: 'category',
         boundaryGap: false,
-        data: ['1', '2']
+        data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
       }],
       yAxis: [{ // y轴坐标数据
         type: 'value',
@@ -83,21 +76,21 @@ export default {
         {
           name: '温度',
           type: 'line', // pie->饼状图  line->折线图  bar->柱状图
-          data: [11, 12],
+          data: this.tmp,
           lineStyle: {
             color: 'rgb(229, 131, 8)'
           }
         }
-        // {
-        //   name: '',
-        //   type: 'line', // pie->饼状图  line->折线图  bar->柱状图
-        //   data: [1, -2, 2, 5, 3, 2, 0, 1, 0, 0]
-        // }
+
       ]    }
 
     myCharts.setOption(options)
     myCharts2.setOption(options2)
-  }
+  },
+  props: [
+    "pressure",
+    "tmp"
+  ]
 }
 </script>
 

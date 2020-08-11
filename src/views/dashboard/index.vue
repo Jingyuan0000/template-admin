@@ -4,12 +4,12 @@
       <div class="tag-container">
         <ul>
           <li
-            v-for="(item, index) in 8"
+            v-for="(item, index) in taglist"
             :class="'tag' + (index + 1)"
-          >
+          >{{item.name + ': ' + item.value}}
           </li>
         </ul>
-        <el-tag
+        <!-- <el-tag
           :key="tag.index"
           v-for="tag in dynamicTags"
           type=""
@@ -20,9 +20,19 @@
           class="sensor-tag"
         >
           {{ tag.name + ":     " + tag.value }}
-        </el-tag>
+        </el-tag> -->
       </div>
-      <windDirecStart :direction1="windDirection" />
+      <div class="panel-container">
+
+        <div class="time-tag">
+          {{timestamp}}
+        </div>
+        <windDirecStart
+          :direction1="windDirection"
+          v-if="showPanel"
+        />
+      </div>
+
     </div>
     <div class="lower-part">
       <mailTable
@@ -32,7 +42,11 @@
 
       <el-row class="param-area">
         <el-col :span="12">
-          <Echarts />
+          <Echarts
+            :pressure="pressureHistory"
+            :tmp="tmpHistory"
+            v-if="showLine"
+          />
         </el-col>
       </el-row>
     </div>
@@ -40,12 +54,12 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import windDirecStart from "../echarts/windDirecStart";
-import echarts from "../echarts/echarts";
-import sensorTable from "../echarts/sensorTable";
-import SocketIO from "socket.io-client";
-import { sensorName } from "../../utils/sensor";
+import { mapGetters } from "vuex"
+import windDirecStart from "../echarts/windDirecStart"
+import echarts from "../echarts/echarts"
+import sensorTable from "../echarts/sensorTable"
+import SocketIO from "socket.io-client"
+import { sensorName } from "../../utils/sensor"
 
 export default {
   name: "Dashboard",
@@ -59,176 +73,126 @@ export default {
     return {
       styleObject: {},
       s_showByRow: true,
-
       getDataUrl: "http://127.0.0.1:8500/login",
       sensors: [],
-      windDirection: "70",
-      // tableData: [
-      //   { key: '单号', value: '1001' },
-      //   { key: '商品名称', value: '篮球' },
-      //   { key: '价格', value: '120.00' },
-      //   { key: '订单日期', value: '2017-03-01' },
-      //   { key: '付款方式', value: '在线支付' },
-      //   { key: '收货地址', value: '北京市海淀区西北旺镇' },
-      // ],
+      windDirection: '',
       loading: false,
-      flag: true,
+      showPanel: false,
+      showLine: false,
       dynamicTags: JSON.parse(localStorage.dynamicTags) || [],
       selectVisible: false,
       selectValue: "",
       sensorName: sensorName,
-      sensorValue: [
-        { name: "1", value: "30" },
-        { name: "2", value: "40" },
-        { name: "3", value: "50" }
-      ],
-      // socketData: [],
-      socketData: {
-        id: 680,
-        radiation1_total: 0,
-        radiation2_total: 0,
-        land_tmp1: 0,
-        land_tmp2: 0,
-        land_tmp3: 0,
-        land_tmp4: 0,
-        land_tmp5: 0,
-        env_tmp: 25,
-        env_hum: 63.3,
-        dew_point: 17.54,
-        pressure: 802.6,
-        altitude: 1927,
-        speed: 0,
-        avg_speed2: 0,
-        avg_speed10: 0,
-        wind_direction: 0,
-        radiation1: 0,
-        radiation2: 0,
-        land_hum: 0,
-        battery_voltage: 13.2,
-        rain_total: 0,
-        visibility: 0,
-        avg_visibility10: 0,
-        sunshine_total: 0,
-        co2: 0,
-        compass: 0,
-        pm2_5: 0,
-        pm10: 0,
-        noise: 0,
-        illumination: 0,
-        dtu: "13722000038",
-        device_no: "0001",
-        function_code: "030C",
-        date: "2020-08-05T16:00:00.000Z",
-        time: "102000"
-      },
-      newSocketData: []
+      taglist: [],
+      pressureHistory: [],
+      tmpHistory: [],
+      timestamp: '',
+      socketData: [],
+      newSocketData: [],
+      historyData: []
     };
   },
-  // computed: {
-  //   ...mapGetters([
-  //     'name'
-  //   ])
-  // },
 
-  watch: {
-    // newSocketData() {
-    // }
-  },
   created() {
-    // this.initSocket()
-    this.styleObject = this.tableStyle;
+    this.initSocket()
+    this.styleObject = this.tableStyle
     if (this.showByRow !== undefined) {
-      this.s_showByRow = this.showByRow;
+      this.s_showByRow = this.showByRow
     }
   },
   computed: {
     rowCount: function () {
-      return Math.ceil(this.tableData.length / 2);
+      return Math.ceil(this.tableData.length / 2)
     }
   },
   mounted() {
     this.$nextTick(function () {
-      var _this = this;
+      var _this = this
     });
-    // this.getData()
-    this.dealOption();
+
+
   },
   destroyed() {
-    this.$socket.close();
+    this.$socket.close()
   },
 
   methods: {
-    CellStyle({ row, rowIndex }) {
-      return "text-align:center;";
-    },
-    HeaderColor({ row, column, rowIndex, columnIndex }) {
-      return "background-color:#F5F7FA;color:#999;font-wight:30;font-size:14px;text-align:center;border-color:#ddd";
-    },
+    // openFullScreen() {
+    //   const loading = this.$loading({
+    //     lock: true,
+    //     text: 'Loading',
+    //     spinner: 'el-icon-loading',
+    //     background: 'rgba(0, 0, 0, 0.7)'
+    //   });
+    //   setTimeout(() => {
+    //     loading.close();
+    //   }, 5000);
+    // },
 
-    // 获取数据
-    getData() {
-      this.loading = true;
-      var that = this;
-      this.$.ajax({
-        url: that.getDataUrl,
-        type: "get",
-        success: function (data) {
-          // console.log('success: ', data.data[0])
-          that.sensors = data.data[0];
-          that.env_tmp = that.sensors["env_tmp"];
-          that.windDirection = that.sensors["wind_direction"];
-          that.flag = true;
-          that.tableData.push(that.sensors);
-          that.loading = false;
-        },
-        error: function (xhr, errorType, error) {
-          console.log("Ajax error: " + error);
-          that.loading = false;
-        }
-      }).then(function (data) { });
-    },
 
-    // 点击获取新数据
-    clickButton() {
-      this.tableData = [];
-      this.getData();
-    },
 
-    // 删除标签
-    handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
-      localStorage.setItem("dynamicTags", JSON.stringify(this.dynamicTags));
-    },
-    showSelect() {
-      this.selectVisible = true;
-      this.$nextTick(_ => {
-        console.log("lll", this.$refs.saveSelectInput.value);
-        // this.$refs.saveSelectInput.value.focus()
+    // 初始化socket
+    initSocket() {
+      this.sockets.listener.subscribe("relogin", msg => {
+        // this.socketData = JSON.parse(msg)
+        console.log("msg" + msg)
+        this.socketData = msg
+        console.log("客户端已收到最新一条", this.socketData)
+        this.dealOption()
+      });
+      this.sockets.listener.subscribe("lastTen", msg => {
+        // this.socketData = JSON.parse(msg)
+        console.log("msg" + msg)
+        this.historyData = msg
+        console.log("已收到最新十条", this.historyData)
+
+        this.dealHistory()
       });
     },
-    // 处理下拉选项
+
+    // 处理标签选项
     dealOption() {
-      var socketKeys = Object.keys(this.socketData);
-      console.log(socketKeys);
+      this.newSocketData = []
+      this.taglist = []
+      var socketObject = JSON.parse(this.socketData)
+      this.windDirection = socketObject.wind_direction
+      this.timestamp = socketObject.time
+      this.showPanel = true
+      var socketKeys = Object.keys(socketObject)
 
       for (let i = 0; i < this.sensorName.length; i++) {
-        console.log(socketKeys.indexOf(this.sensorName[i].prop));
-
         if (socketKeys.indexOf(this.sensorName[i].prop) !== -1) {
           var a = {
             name: "",
             prop: "",
             value: ""
           };
-          a.name = this.sensorName[i].name;
-          a.prop = this.sensorName[i].prop;
-          let v = a.prop;
-          a.value = this.socketData[v];
-          this.newSocketData.push(a);
+          a.name = this.sensorName[i].name
+          a.prop = this.sensorName[i].prop
+          let v = a.prop
+          a.value = socketObject[v]
+          this.newSocketData.push(a)
         }
       }
-      console.log("newSocketData: ", this.newSocketData);
+
+      this.taglist = this.newSocketData.slice(0, 8)
     },
+
+    // 处理收到的历史数据
+    dealHistory() {
+      this.pressureHistory = []
+      this.tmpHistory = []
+      for (let j = 0; j < this.historyData.length; j++) {
+        this.pressureHistory.push(this.historyData[j].pressure)
+        this.tmpHistory.push(this.historyData[j].env_tmp)
+      }
+      this.showLine = true
+      console.log('历史数据', this.pressureHistory, this.tmpHistory)
+    },
+
+
+
+
 
     //点选添加气象要素
     handleSelectConfirm(v) {
@@ -237,45 +201,55 @@ export default {
           message: '只能选择八个气象要素',
           type: 'warning'
         })
-
       }
-      let currTag = {};
-      console.log("item", v);
-      let currArr = v.split(":");
-      console.log("currArr", currArr);
+      let currTag = {}
+      console.log("item", v)
+      let currArr = v.split(":")
+      console.log("currArr", currArr)
       currTag.name = currArr[0];
-      currTag.value = parseInt(currArr[1]);
-      console.log("currTag", currTag);
-      this.dynamicTags.push(currTag);
+      currTag.value = parseInt(currArr[1])
+      console.log("currTag", currTag)
+      this.dynamicTags.push(currTag)
       if (this.dynamicTags.length > 1) {
-        this.dynamicTags = this.unique(this.dynamicTags);
+        this.dynamicTags = this.unique(this.dynamicTags)
       }
-      localStorage.setItem("dynamicTags", JSON.stringify(this.dynamicTags));
-      console.log("localStorage", localStorage.dynamicTags);
+      localStorage.setItem("dynamicTags", JSON.stringify(this.dynamicTags))
+      console.log("localStorage", localStorage.dynamicTags)
     },
 
-    // 初始化socket
-    initSocket() {
-      this.sockets.listener.subscribe("relogin", msg => {
-        // this.socketData = JSON.parse(msg);
-        console.log("msg" + msg);
-        this.socketData = msg;
-        console.log("客户端已收到", this.socketData);
+    // 删除标签
+    handleClose(tag) {
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
+      localStorage.setItem("dynamicTags", JSON.stringify(this.dynamicTags))
+    },
+
+    // 显示下拉列表
+    showSelect() {
+      this.selectVisible = true
+      this.$nextTick(_ => {
+        console.log("lll", this.$refs.saveSelectInput.value)
+        // this.$refs.saveSelectInput.value.focus()
       });
     },
+
+
+    // 气象标签去重
     unique(arr) {
-      var obj = {};
+      var obj = {}
       arr = arr.reduce(function (item, next) {
-        obj[next.name] ? "" : (obj[next.name] = true && item.push(next));
-        return item;
-      }, []);
-      console.log("unique", arr);
-      return arr;
-    }
+        obj[next.name] ? "" : (obj[next.name] = true && item.push(next))
+        return item
+      }, [])
+      console.log("unique", arr)
+      return arr
+    },
+
+
+
   },
   sockets: {
     connect() {
-      console.log("链接成功");
+      console.log("链接成功")
     }
   }
 };
@@ -310,12 +284,9 @@ export default {
   color: #303133;
   border-radius: 10px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   padding: 20px 10px;
   margin-top: 20px;
-}
-.tag-container {
-  // max-width: 1000px;
 }
 .tag-container ul {
   display: flex;
@@ -330,14 +301,15 @@ export default {
   text-align: center;
   line-height: 120px;
   border-radius: 10px;
-  color: #fff;
-  padding: 20px;
+  // color: #fff;
+  color: #827af3;
   opacity: 0.8;
-  // background: linear-gradient(
-  //   to right,
-  //   rgba(255, 245, 244, 0.8) 0%,
-  //   rgba(315, 245, 244, 0.6) 100%
-  // );
+  font-size: 22px;
+  background: linear-gradient(
+    to right,
+    rgba(130, 122, 243, 0.2) 0%,
+    rgba(180, 122, 243, 0.2) 100%
+  );
 }
 .lower-part {
   padding-bottom: 0;
@@ -411,18 +383,16 @@ export default {
   margin-top: 10px;
   margin-bottom: 40px;
 }
-.tag-item {
-}
 .tag1 {
-  // background: #0cd2e3;
-  background: linear-gradient(
-    to right,
-    rgba(12, 210, 227, 0.2) 0%,
-    rgba(62, 210, 227, 0.2) 100%
-  );
+  background: #17a2b8;
+  // background: linear-gradient(
+  //   to right,
+  //   rgba(12, 210, 227, 0.2) 0%,
+  //   rgba(62, 210, 227, 0.2) 100%
+  // );
 }
 .tag2 {
-  background: #3f79f1;
+  background: #6f42c1;
   // background: linear-gradient(
   //   to right,
   //   rgba(63, 121, 241, 0.2) 0%,
@@ -430,12 +400,26 @@ export default {
   // );
 }
 .tag3 {
-  background: #1be1b3;
+  background: #e83e8c;
 }
 .tag4 {
-  background: #f4b72a;
+  background: #dc3545;
 }
 .tag5 {
-  background: #fd6c9e;
+  background: #fd7e14;
+}
+
+.tag6 {
+  background: #ffc107;
+}
+.tag7 {
+  background: #007bff;
+}
+.tag8 {
+  background: #28a745;
+}
+.panel-container {
+  display: flex;
+  flex-direction: column;
 }
 </style>

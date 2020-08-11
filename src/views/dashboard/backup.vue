@@ -3,7 +3,7 @@
     <div class="upper-part">
       <div class="tag-container">
         <ul>
-          <li v-for="item in 8">添加要素</li>
+          <li v-for="item in taglist">添加要素</li>
         </ul>
         <el-tag
           :key="tag.index"
@@ -81,6 +81,7 @@ export default {
       getDataUrl: "http://127.0.0.1:8500/login",
       sensors: [],
       windDirection: "70",
+      taglist: [],
       // tableData: [
       //   { key: '单号', value: '1001' },
       //   { key: '商品名称', value: '篮球' },
@@ -183,7 +184,7 @@ export default {
       return "background-color:#F5F7FA;color:#999;font-wight:30;font-size:14px;text-align:center;border-color:#ddd";
     },
 
-    // 获取数据
+    // 手动获取数据
     getData() {
       this.loading = true;
       var that = this;
