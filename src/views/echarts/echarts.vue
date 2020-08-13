@@ -31,14 +31,29 @@ export default {
       xAxis: [{ // x轴坐标数据
         type: 'category',
         boundaryGap: false,
-        data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+        data: this.timeline
       }],
       yAxis: [{ // y轴坐标数据
         type: 'value',
         axisLabel: {
           formatter: '{value} °C'
-        }
+        },
+        interval: 2,
+        // min: 795,
+        // max: 804
+        max: function (value) {
+          return (value.max + 0.01 * (value.min)).toFixed(2);
+        },
+        min: function (value) {
+          return (value.min - 0.01 * (value.min)).toFixed(2);
+        },
       }],
+      grid: {
+        left: 70,
+        bottom: 20,
+        top: 36
+
+      },
       series: [ // 驱动图表生成的数据内容数组，几条折现，数组中就会有几个对应对象，来表示对应的折线
         {
           name: '气压',
@@ -64,14 +79,30 @@ export default {
       xAxis: [{ // x轴坐标数据
         type: 'category',
         boundaryGap: false,
-        data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+        data: this.timeline
       }],
       yAxis: [{ // y轴坐标数据
         type: 'value',
         axisLabel: {
           formatter: '{value} °C'
-        }
+        },
+        interval: 1,
+        // min: 795,
+        // max: 804
+        max: function (value) {
+          return (value.max + 0.01 * (value.min)).toFixed(3);
+        },
+        min: function (value) {
+          return (value.min - 0.01 * (value.min)).toFixed(3);
+        },
       }],
+      grid: {
+        left: 70,
+        bottom: 20,
+        top: 36
+
+
+      },
       series: [ // 驱动图表生成的数据内容数组，几条折现，数组中就会有几个对应对象，来表示对应的折线
         {
           name: '温度',
@@ -87,9 +118,25 @@ export default {
     myCharts.setOption(options)
     myCharts2.setOption(options2)
   },
+  watch: {
+    options: {
+      handler(newVal, oldVal) {
+        if (this.timeline) {
+          if (newVal) {
+            this.myCharts.setOption(newVal)
+          } else {
+            this.myCharts.setOption(oldVal)
+          }
+        }
+      },
+      deep: true
+    }
+
+  },
   props: [
     "pressure",
-    "tmp"
+    "tmp",
+    "timeline"
   ]
 }
 </script>
@@ -102,11 +149,12 @@ export default {
   align-items: center;
 }
 #myCharts {
-  width: 400px;
+  width: 600px;
   height: 200px;
 }
 #myCharts2 {
-  width: 400px;
+  width: 600px;
   height: 200px;
+  margin-top: 40px;
 }
 </style>

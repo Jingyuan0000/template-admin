@@ -38,50 +38,16 @@
 
     </div>
     <div class="lower-part">
-      <div class="classify-area">
-        <el-card class="classify-card">
-          <div
-            slot="header"
-            class="clearfix card1"
-          >
-            <span>云</span>
-          </div>
-          <speedTable
-            :tableData="windSpeed"
-            :tableStyle="{ width: '500px' }"
-          ></speedTable>
-        </el-card>
-        <el-card class="classify-card">
-          <div
-            slot="header"
-            class="clearfix card1"
-          >
-            <span>风向</span>
-          </div>
-          <windDirectTable
-            :tableData="cloud"
-            :tableStyle="{ width: '500px' }"
-          ></windDirectTable>
-        </el-card>
-        <el-card>
-          <div
-            slot="header"
-            class="clearfix card1"
-          >
-            <span>风速</span>
-          </div>
-          <cloudTable
-            :tableData="windDir"
-            :tableStyle="{ width: '500px' }"
-          ></cloudTable>
-        </el-card>
-
-      </div>
-
       <el-card>
         <mailTable
-          :tableData="currNewSocket"
-          :tableStyle="{ width: '400px' }"
+          :tableData="newSocketData"
+          :tableStyle="{ width: '600px' }"
+        ></mailTable>
+      </el-card>
+      <el-card>
+        <mailTable
+          :tableData="newSocketData"
+          :tableStyle="{ width: '600px' }"
         ></mailTable>
 
       </el-card>
@@ -105,10 +71,6 @@ import { mapGetters } from "vuex"
 import windDirecStart from "../echarts/windDirecStart"
 import echarts from "../echarts/echarts"
 import sensorTable from "../echarts/sensorTable"
-import speedTable from "../echarts/speedTable"
-import windDirectTable from "../echarts/windDirectTable"
-import cloudTable from "../echarts/cloudTable"
-
 import SocketIO from "socket.io-client"
 import { sensorName } from "../../utils/sensor"
 import { showLoading, hideLoading } from '../../utils/loading'
@@ -119,11 +81,7 @@ export default {
     windDirecStart,
     SocketIO,
     Echarts: echarts,
-    mailTable: sensorTable,
-    speedTable,
-    windDirectTable,
-    cloudTable
-
+    mailTable: sensorTable
   },
   data() {
     return {
@@ -143,60 +101,16 @@ export default {
       pressureHistory: [],
       tmpHistory: [],
       timestamp: '',
-      // socketData: [],
-      socketData: {
-        id: 680,
-        radiation1_total: 0,
-        radiation2_total: 0,
-        land_tmp1: 0,
-        land_tmp2: 0,
-        land_tmp3: 0,
-        land_tmp4: 0,
-        land_tmp5: 0,
-        env_tmp: 25,
-        env_hum: 63.3,
-        dew_point: 17.54,
-        pressure: 802.6,
-        altitude: 1927,
-        speed: 0,
-        avg_speed2: 0,
-        avg_speed10: 0,
-        wind_direction: 0,
-        radiation1: 0,
-        radiation2: 0,
-        land_hum: 0,
-        battery_voltage: 13.2,
-        rain_total: 0,
-        visibility: 0,
-        avg_visibility10: 0,
-        sunshine_total: 0,
-        co2: 0,
-        compass: 0,
-        pm2_5: 0,
-        pm10: 0,
-        noise: 0,
-        illumination: 0,
-        dtu: "13722000038",
-        device_no: "0001",
-        function_code: "030C",
-        date: "2020-08-05T16:00:00.000Z",
-        time: "102000"
-      },
+      socketData: [],
       newSocketData: [],
       historyData: [],
       timeLine: [],
-      date: '',
-      windSpeed: [],
-      windDir: [],
-      visibility: [],
-      cloud: [],
-      currNewSocket: []
-
+      date: ''
     };
   },
 
   created() {
-    // this.initSocket()
+    this.initSocket()
     this.styleObject = this.tableStyle
     if (this.showByRow !== undefined) {
       this.s_showByRow = this.showByRow
@@ -212,17 +126,12 @@ export default {
       var _this = this
     });
 
-    this.dealOption()
-    this.dealHistory()
-    let currdate = new Date()
-    this.date = this.dateFormat('YYYY-mm-dd', currdate)
-
 
 
 
   },
   destroyed() {
-    // this.$socket.close()
+    this.$socket.close()
   },
 
   methods: {
@@ -267,8 +176,7 @@ export default {
     dealOption() {
       this.newSocketData = []
       this.taglist = []
-      // var socketObject = JSON.parse(this.socketData)
-      var socketObject = this.socketData
+      var socketObject = JSON.parse(this.socketData)
       this.windDirection = socketObject.wind_direction
       this.timestamp = socketObject.time.substring(0, 4)
       let fullstamp = this.timestamp.substring(0, 2) + ':' + this.timestamp.substring(2)
@@ -290,73 +198,6 @@ export default {
           this.newSocketData.push(a)
         }
       }
-      this.windSpeed.push(this.newSocketData[5], this.newSocketData[6], this.newSocketData[7])
-      let wd1 = {
-        name: '两分钟平均风向(°)',
-        prop: '',
-        value: 0
-      }
-      let wd2 = {
-        name: '十分钟平均风向(°)',
-        prop: '',
-        value: 0
-      }
-      this.windDir.push(wd1, wd2, this.newSocketData[8])
-
-      let vb1 = {
-        name: '两分钟平均能见度(m)',
-        prop: '',
-        value: 0
-      }
-      this.visibility.push(vb1, this.newSocketData[11], this.newSocketData[12])
-
-      let cld1 = {
-        name: '云高(m)',
-        prop: '',
-        value: 0
-      }
-      let cld2 = {
-        name: '云量(%)',
-        prop: '',
-        value: 0
-      }
-      let cld3 = {
-        name: '云状',
-        prop: '',
-        value: ''
-      }
-
-      this.cloud.push(cld1, cld2, cld3)
-
-      let light1 = {
-        name: '跑道灯光强度(Lux)',
-        prop: '',
-        value: 0
-      }
-      let light2 = {
-        name: '噪声(B)',
-        prop: '',
-        value: 0
-      }
-      let light3 = {
-        name: 'CO2(ppm)',
-        prop: '',
-        value: 0
-      }
-      let light4 = {
-        name: 'PM2.5(ug/m³)',
-        prop: '',
-        value: 0
-      }
-      let light5 = {
-        name: 'PM10(ug/m³)',
-        prop: '',
-        value: 0
-      }
-      this.currNewSocket.push(this.newSocketData[0], this.newSocketData[1], this.newSocketData[2],
-        this.newSocketData[3], this.newSocketData[4], this.newSocketData[9], this.newSocketData[10], light1, light2, light3, light4, light5)
-
-
 
       this.taglist = this.newSocketData.slice(0, 8)
     },
@@ -656,22 +497,5 @@ export default {
     font-size: 34px;
     color: #fff;
   }
-}
-.classify-card {
-  margin-bottom: 20px;
-  // margin-bottom: 84px;
-}
-
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-}
-.clearfix:after {
-  clear: both;
-}
-.card1 {
-  // background: #17a2b8;
-  padding: 0;
 }
 </style>

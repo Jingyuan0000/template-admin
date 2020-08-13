@@ -1,34 +1,19 @@
 <template>
   <table
-    class="mailTable"
+    class="classify"
     :style="styleObject"
-    v-if="s_showByRow"
+    v-if="tableData.length>1"
   >
-    <tr v-for="index in rowCount">
-      <td class="column">{{tableData[index*2-2].name}}</td>
-      <td class="td-grid tag8">{{tableData[index*2-2].value}}</td>
-      <td class="column">{{tableData[index*2-1] !== undefined ? tableData[index*2-1].name : ''}}</td>
-      <td
-        :class="'tag-even' + (index+1)"
-        class="td-grid"
-      >{{tableData[index*2-1] !== undefined ? tableData[index*2-1].value : ''}}</td>
+    <tr>
+      <td class="column">{{tableData[0].name}} </td>
+      <td class="td-grid88 tag88">{{tableData[0].value}} </td>
+      <td class="column">{{tableData[1].name}} </td>
+      <td class="td-grid88 tag88">{{tableData[1].value}} </td>
+      <td class="column">{{tableData[2].name}} </td>
+      <td class="td-grid88 tag88">{{tableData[2].value}} </td>
+
     </tr>
   </table>
-  <!-- <table
-    class="mailTable"
-    :style="styleObject"
-    v-else
-  >
-    <tr v-for="index in rowCount">
-      <td class="column">{{tableData[index-1].name}}</td>
-      <td>{{tableData[index-1].value}}</td>
-      <td class="column">{{tableData[rowCount+index-1] !== undefined ? tableData[rowCount+index-1].name : ''}}</td>
-      <td
-        :class="'tag' + (index)"
-        class="td-grid"
-      >{{tableData[rowCount+index-1] !== undefined ? tableData[rowCount+index-1].value : ''}}</td>
-    </tr>
-  </table> -->
 </template>
 
 <script>
@@ -36,15 +21,11 @@ export default {
   data() {
     return {
       styleObject: {},
-      s_showByRow: true,
+      s_showByRow: true
     };
   },
   props: ['tableData', 'tableStyle', 'showByRow'],
-  computed: {
-    rowCount: function () {
-      return Math.ceil(this.tableData.length / 2);
-    }
-  },
+
   created() {
     this.styleObject = this.tableStyle;
     if (this.showByRow !== undefined) {
@@ -55,28 +36,35 @@ export default {
 </script>
 
 <style>
-　　.mailTable,
-.mailTable tr,
-.mailTable tr td {
+　　.classify,
+.classify tr,
+.classify tr td {
   /* border: 1px solid #e6eaee; */
-  padding: 18px;
   color: #336699;
+  width: 40px;
 }
-　　.mailTable {
+　　.classify {
   font-size: 12px;
   color: #71787e;
 }
-　　.mailTable tr td {
+　　.classify tr td {
   /* border: 1px solid #e6eaee; */
-  width: 130px;
   height: 35px;
   line-height: 35px;
   box-sizing: border-box;
-  padding: 0 10px;
+  padding: 10px;
 }
-　　.mailTable tr td.column {
+　　.classify tr td.column {
   background-color: #eff3f6;
   color: #393c3e;
+  width: 30px;
+}
+.td-grid88 {
+  opacity: 0.9;
+  /* color: #fff !important; */
+  text-align: center;
+  padding: 4px 6px;
+  height: 20px;
 }
 
 .tag1 {
@@ -112,12 +100,10 @@ export default {
   background: #007bff;
 }
 
-.tag8 {
-  background: #28a745;
-}
-.td-grid {
-  opacity: 0.9;
-  color: #fff !important;
+.tag88 {
+  /* background: #28a745; */
+  color: #fd7e14 !important;
+  font-size: 24px;
 }
 
 .tag-even1 {

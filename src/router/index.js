@@ -54,7 +54,6 @@ export const constantRoutes = [
       meta: { title: '观测主页', icon: 'dashboard' }
     }]
   },
-
   {
     path: '/weather',
     component: Layout,
@@ -64,6 +63,17 @@ export const constantRoutes = [
       name: 'Weather',
       component: () => import('@/views/weather/index'),
       meta: { title: '特殊天气', icon: 'unexpected' }
+    }]
+  },
+  {
+    path: '/map',
+    component: Layout,
+    redirect: '/map',
+    children: [{
+      path: 'index',
+      name: 'Map',
+      component: () => import('@/views/map/index'),
+      meta: { title: '地图定位', icon: 'unexpected' }
     }]
   },
   {

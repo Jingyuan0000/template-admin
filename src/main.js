@@ -37,10 +37,10 @@ Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
 
-Vue.use(new VueSocketIO({
-  debug: true,
-  connection: SocketIO('http://47.92.220.113:8500')
-}))
+// Vue.use(new VueSocketIO({
+//   debug: true,
+//   connection: SocketIO('http://47.92.220.113:8500')
+// }))
 Vue.config.productionTip = false
 
 new Vue({
