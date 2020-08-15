@@ -15,18 +15,6 @@
           >{{item.name + ': ' + item.value}}
           </li>
         </ul>
-        <!-- <el-tag
-          :key="tag.index"
-          v-for="tag in dynamicTags"
-          type=""
-          effect="dark"
-          closable
-          :disable-transitions="false"
-          @close="handleClose(tag)"
-          class="sensor-tag"
-        >
-          {{ tag.name + ":     " + tag.value }}
-        </el-tag> -->
       </div>
       <div class="panel-container">
 
@@ -47,7 +35,7 @@
             <span>云</span>
           </div>
           <speedTable
-            :tableData="windSpeed"
+            :tableData="cloud"
             :tableStyle="{ width: '500px' }"
           ></speedTable>
         </el-card>
@@ -59,7 +47,7 @@
             <span>风向</span>
           </div>
           <windDirectTable
-            :tableData="cloud"
+            :tableData="windDir"
             :tableStyle="{ width: '500px' }"
           ></windDirectTable>
         </el-card>
@@ -71,7 +59,7 @@
             <span>风速</span>
           </div>
           <cloudTable
-            :tableData="windDir"
+            :tableData="windSpeed"
             :tableStyle="{ width: '500px' }"
           ></cloudTable>
         </el-card>
@@ -80,7 +68,7 @@
 
       <el-card>
         <mailTable
-          :tableData="currNewSocket"
+          :tableData="allNewSocket"
           :tableStyle="{ width: '400px' }"
         ></mailTable>
 
@@ -131,72 +119,38 @@ export default {
       s_showByRow: true,
       getDataUrl: "http://127.0.0.1:8500/login",
       sensors: [],
-      windDirection: '',
+      windDirection: '', // 上方右边风向仪表盘
       loading: false,
       showPanel: false,
       showLine: false,
-      dynamicTags: JSON.parse(localStorage.dynamicTags) || [],
+      dynamicTags: [],
       selectVisible: false,
       selectValue: "",
       sensorName: sensorName,
-      taglist: [],
-      pressureHistory: [],
-      tmpHistory: [],
+      taglist: [], // 上方主要气象要素
       timestamp: '',
-      // socketData: [],
-      socketData: {
-        id: 680,
-        radiation1_total: 0,
-        radiation2_total: 0,
-        land_tmp1: 0,
-        land_tmp2: 0,
-        land_tmp3: 0,
-        land_tmp4: 0,
-        land_tmp5: 0,
-        env_tmp: 25,
-        env_hum: 63.3,
-        dew_point: 17.54,
-        pressure: 802.6,
-        altitude: 1927,
-        speed: 0,
-        avg_speed2: 0,
-        avg_speed10: 0,
-        wind_direction: 0,
-        radiation1: 0,
-        radiation2: 0,
-        land_hum: 0,
-        battery_voltage: 13.2,
-        rain_total: 0,
-        visibility: 0,
-        avg_visibility10: 0,
-        sunshine_total: 0,
-        co2: 0,
-        compass: 0,
-        pm2_5: 0,
-        pm10: 0,
-        noise: 0,
-        illumination: 0,
-        dtu: "13722000038",
-        device_no: "0001",
-        function_code: "030C",
-        date: "2020-08-05T16:00:00.000Z",
-        time: "102000"
-      },
+      socketData: [],
       newSocketData: [],
       historyData: [],
-      timeLine: [],
       date: '',
-      windSpeed: [],
-      windDir: [],
-      visibility: [],
-      cloud: [],
-      currNewSocket: []
+      windSpeed: [], // 下方左边风速区
+      windDir: [], // 下方左边风向区
+      // visibility: [],
+      cloud: [], // 下方左边云区
+      allNewSocket: [], // 下方中间综合数据
 
+      pressureHistory: [],
+      tmpHistory: [],
+      humHistory: [],
+      dewHistory: [],
+      speedHistory: [],
+      directionHistory: [],
+      timeLine: [],
     };
   },
 
   created() {
-    // this.initSocket()
+    this.initSocket()
     this.styleObject = this.tableStyle
     if (this.showByRow !== undefined) {
       this.s_showByRow = this.showByRow
@@ -210,35 +164,39 @@ export default {
   mounted() {
     this.$nextTick(function () {
       var _this = this
-    });
-
-    this.dealOption()
-    this.dealHistory()
+    })
     let currdate = new Date()
     this.date = this.dateFormat('YYYY-mm-dd', currdate)
 
 
+    if (!JSON.parse(localStorage.getItem('newSocketData'))) {
+      showLoading()
+      return
+    } else {
+      let oleSocketData = JSON.parse(localStorage.getItem('newSocketData'))
+      this.taglist = oleSocketData.slice(0, 8)
+      this.timestamp = JSON.parse(localStorage.getItem('timestamp'))
+      this.windDirection = JSON.parse(localStorage.getItem('windDirection'))
+      this.allNewSocket = JSON.parse(localStorage.getItem('allNewSocket'))
+      this.windDir = JSON.parse(localStorage.getItem('windDir'))
+      this.windSpeed = JSON.parse(localStorage.getItem('windSpeed'))
+      this.cloud = JSON.parse(localStorage.getItem('cloud'))
 
-
+      this.pressureHistory = JSON.parse(localStorage.getItem('pressureHistory'))
+      this.tmpHistory = JSON.parse(localStorage.getItem('tmpHistory'))
+      this.timeLine = JSON.parse(localStorage.getItem('timeLine'))
+      this.humHistory = JSON.parse(localStorage.getItem('humHistory'))
+      this.dewHistory = JSON.parse(localStorage.getItem('dewHistory'))
+      this.speedHistory = JSON.parse(localStorage.getItem('speedHistory'))
+      this.directionHistory = JSON.parse(localStorage.getItem('directionHistory'))
+      this.showLine = true
+    }
   },
   destroyed() {
-    // this.$socket.close()
+    this.$socket.close()
   },
 
   methods: {
-    // openFullScreen() {
-    //   const loading = this.$loading({
-    //     lock: true,
-    //     text: 'Loading',
-    //     spinner: 'el-icon-loading',
-    //     background: 'rgba(0, 0, 0, 0.7)'
-    //   });
-    //   setTimeout(() => {
-    //     loading.close();
-    //   }, 5000);
-    // },
-
-
 
     // 初始化socket
     initSocket() {
@@ -251,7 +209,6 @@ export default {
         this.dealOption()
       });
       this.sockets.listener.subscribe("lastTen", msg => {
-        // this.socketData = JSON.parse(msg)
         console.log("msg" + msg)
         this.historyData = msg
         console.log("已收到最新十条", this.historyData)
@@ -267,11 +224,21 @@ export default {
     dealOption() {
       this.newSocketData = []
       this.taglist = []
-      // var socketObject = JSON.parse(this.socketData)
-      var socketObject = this.socketData
+      this.windSpeed = []
+      this.windDir = []
+      this.visibility = []
+      this.cloud = []
+      let currAllSocket = []
+      let currWindSpeed = []
+      let currCloud = []
+      let currWindDir = []
+      var socketObject = JSON.parse(this.socketData)
+      // var socketObject = this.socketData
       this.windDirection = socketObject.wind_direction
+      localStorage.setItem('windDirection', JSON.stringify(this.windDirection))
       this.timestamp = socketObject.time.substring(0, 4)
       let fullstamp = this.timestamp.substring(0, 2) + ':' + this.timestamp.substring(2)
+      localStorage.setItem('timestamp', JSON.stringify(fullstamp))
       this.timestamp = fullstamp
       this.showPanel = true
       var socketKeys = Object.keys(socketObject)
@@ -290,7 +257,15 @@ export default {
           this.newSocketData.push(a)
         }
       }
-      this.windSpeed.push(this.newSocketData[5], this.newSocketData[6], this.newSocketData[7])
+      localStorage.setItem('newSocketData', JSON.stringify(this.newSocketData))
+
+      this.taglist = this.newSocketData.slice(0, 8)
+
+      currWindSpeed.push(this.newSocketData[5], this.newSocketData[6], this.newSocketData[7])
+      this.windSpeed = currWindSpeed
+      localStorage.setItem('windSpeed', JSON.stringify(this.windSpeed))
+
+
       let wd1 = {
         name: '两分钟平均风向(°)',
         prop: '',
@@ -301,14 +276,16 @@ export default {
         prop: '',
         value: 0
       }
-      this.windDir.push(wd1, wd2, this.newSocketData[8])
+      currWindDir.push(wd1, wd2, this.newSocketData[8])
+      this.windDir = currWindDir
+      localStorage.setItem('windDir', JSON.stringify(this.windDir))
 
-      let vb1 = {
-        name: '两分钟平均能见度(m)',
-        prop: '',
-        value: 0
-      }
-      this.visibility.push(vb1, this.newSocketData[11], this.newSocketData[12])
+      // let vb1 = {
+      //   name: '两分钟平均能见度(m)',
+      //   prop: '',
+      //   value: 0
+      // }
+      // this.visibility.push(vb1, this.newSocketData[11], this.newSocketData[12])
 
       let cld1 = {
         name: '云高(m)',
@@ -326,7 +303,10 @@ export default {
         value: ''
       }
 
-      this.cloud.push(cld1, cld2, cld3)
+      currCloud.push(cld1, cld2, cld3)
+      this.cloud = currCloud
+      localStorage.setItem('cloud', JSON.stringify(this.cloud))
+
 
       let light1 = {
         name: '跑道灯光强度(Lux)',
@@ -353,28 +333,52 @@ export default {
         prop: '',
         value: 0
       }
-      this.currNewSocket.push(this.newSocketData[0], this.newSocketData[1], this.newSocketData[2],
+      currAllSocket.push(this.newSocketData[0], this.newSocketData[1], this.newSocketData[2],
         this.newSocketData[3], this.newSocketData[4], this.newSocketData[9], this.newSocketData[10], light1, light2, light3, light4, light5)
+      this.allNewSocket = currAllSocket
+      localStorage.setItem('allNewSocket', JSON.stringify(this.allNewSocket))
 
-
-
-      this.taglist = this.newSocketData.slice(0, 8)
     },
 
     // 处理收到的历史数据
     dealHistory() {
-      this.pressureHistory = []
-      this.timeLine = []
-      this.tmpHistory = []
+      let currPressureH = []
+      let currTimeLineH = []
+      let currTmpH = []
+      let currHumH = []
+      let currDewH = []
+      let currSpeedH = []
+      let currDirectionH = []
       for (let j = 0; j < this.historyData.length; j++) {
-        this.pressureHistory.push(this.historyData[j].pressure)
-        this.tmpHistory.push(this.historyData[j].env_tmp)
+        currPressureH.push(this.historyData[j].pressure)
+        currTmpH.push(this.historyData[j].env_tmp)
         let currTimeLine = this.historyData[j].time.substring(0, 2) + ':' + this.historyData[j].time.substring(2, 4)
-        this.timeLine.push(currTimeLine)
+        currTimeLineH.push(currTimeLineH)
+        currHumH.push(this.historyData[j].env_hum)
+        currDewH.push(this.historyData[j].dew_point)
+        currSpeedH.push(this.historyData[j].speed)
+        currDirectionH.push(this.historyData[j].wind_direction)
       }
+      this.pressureHistory = currPressureH
+      this.tmpHistory = currTmpH
+      this.timeLine = currTimeLineH
+      this.humHistory = currHumH
+      this.dewHistory = currDewH
+      this.speedHistory = currSpeedH
+      this.directionHistory = currDirectionH
       this.showLine = true
-      console.log('历史数据', this.pressureHistory, this.tmpHistory)
-      // hideLoading()
+      if (this.tmpHistory.length > 0) {
+        localStorage.setItem('tmpHistory', JSON.stringify(this.tmpHistory))
+      }
+      localStorage.setItem('pressureHistory', JSON.stringify(this.pressureHistory))
+      // localStorage.setItem('timeLine', JSON.stringify(this.timeLine))
+      localStorage.setItem('humHistory', JSON.stringify(this.humHistory))
+      localStorage.setItem('dewHistory', JSON.stringify(this.dewHistory))
+      localStorage.setItem('speedHistory', JSON.stringify(this.speedHistory))
+      localStorage.setItem('directionHistory', JSON.stringify(this.directionHistory))
+
+
+      hideLoading()
     },
 
     // 处理时间
@@ -384,10 +388,6 @@ export default {
         "Y+": date.getFullYear().toString(),        // 年
         "m+": (date.getMonth() + 1).toString(),     // 月
         "d+": date.getDate().toString()        // 日
-        // "H+": date.getHours().toString(),           // 时
-        // "M+": date.getMinutes().toString(),         // 分
-        // "S+": date.getSeconds().toString()          // 秒
-        // 有其他格式化字符需求可以继续添加，必须转化成字符串
       };
       for (let k in opt) {
         ret = new RegExp("(" + k + ")").exec(fmt);
@@ -398,10 +398,6 @@ export default {
       console.log('fmt', fmt)
       return fmt;
     },
-
-
-
-
 
     //点选添加气象要素
     handleSelectConfirm(v) {
@@ -422,8 +418,6 @@ export default {
       if (this.dynamicTags.length > 1) {
         this.dynamicTags = this.unique(this.dynamicTags)
       }
-      // localStorage.setItem("dynamicTags", JSON.stringify(this.dynamicTags))
-      console.log("localStorage", localStorage.dynamicTags)
     },
 
     // 删除标签

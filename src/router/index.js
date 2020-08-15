@@ -66,6 +66,17 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/history',
+    component: Layout,
+    redirect: '/history',
+    children: [{
+      path: 'index',
+      name: 'History',
+      component: () => import('@/views/history/index'),
+      meta: { title: '历史数据', icon: 'graph' }
+    }]
+  },
+  {
     path: '/map',
     component: Layout,
     redirect: '/map',
@@ -73,7 +84,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'Map',
       component: () => import('@/views/map/index'),
-      meta: { title: '地图定位', icon: 'unexpected' }
+      meta: { title: '地图定位', icon: 'map' }
     }]
   },
   {
