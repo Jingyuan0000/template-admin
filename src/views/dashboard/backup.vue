@@ -273,6 +273,48 @@ export default {
       console.log("localStorage", localStorage.dynamicTags);
     },
 
+
+    // 处理收到的历史数据
+    dealHistory() {
+      let currPressureH = []
+      let currTimeLineH = []
+      let currTmpH = []
+      let currHumH = []
+      let currDewH = []
+      let currSpeedH = []
+      let currDirectionH = []
+      for (let j = 0; j < this.historyData.length; j++) {
+        currPressureH.push(this.historyData[j].pressure)
+        currTmpH.push(this.historyData[j].env_tmp)
+        // let currTimeLine = this.historyData[j].time.substring(0, 2) + ':' + this.historyData[j].time.substring(2, 4)
+        // currTimeLineH.push(currTimeLineH)
+        // currHumH.push(this.historyData[j].env_hum)
+        // currDewH.push(this.historyData[j].dew_point)
+        // currSpeedH.push(this.historyData[j].speed)
+        // currDirectionH.push(this.historyData[j].wind_direction)
+      }
+      this.pressureHistory = currPressureH
+      this.tmpHistory = currTmpH
+      this.timeLine = currTimeLineH
+      this.humHistory = currHumH
+      this.dewHistory = currDewH
+      this.speedHistory = currSpeedH
+      this.directionHistory = currDirectionH
+      this.showLine = true
+      if (this.tmpHistory.length > 0) {
+        localStorage.setItem('tmpHistory', JSON.stringify(this.tmpHistory))
+      }
+      localStorage.setItem('pressureHistory', JSON.stringify(this.pressureHistory))
+      // localStorage.setItem('timeLine', JSON.stringify(this.timeLine))
+      localStorage.setItem('humHistory', JSON.stringify(this.humHistory))
+      localStorage.setItem('dewHistory', JSON.stringify(this.dewHistory))
+      localStorage.setItem('speedHistory', JSON.stringify(this.speedHistory))
+      localStorage.setItem('directionHistory', JSON.stringify(this.directionHistory))
+
+
+      hideLoading()
+    },
+
     // 初始化socket
     initSocket() {
       this.sockets.listener.subscribe("relogin", msg => {

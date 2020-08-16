@@ -1,7 +1,7 @@
 <template>
   <div
     id="container"
-    style="width:1000px;height:800px;"
+    style="width:1000px;height:838px;"
   ></div>
 
 </template>
@@ -54,31 +54,41 @@ export default {
       //步骤：定义map变量 调用 qq.maps.Map() 构造函数   获取地图显示容器
       //设置地图中心点
       var myLatlng = new qq.maps.LatLng(this.latitude, this.longitude);
-      var station = new qq.maps.LatLng(102.761722, 25.080056);
+      var station = new qq.maps.LatLng(25.074138, 102.755235);
       console.log('myLatlng', myLatlng)
+      console.log('station', station)
       //定义工厂模式函数
       var myOptions = {
         zoom: 13,               //设置地图缩放级别
         center: station,    //设置中心点样式
-        mapTypeId: qq.maps.MapTypeId.ROADMAP  //设置地图样式详情参见MapType
+        mapTypeId: qq.maps.MapTypeId.SATELLITE  //设置地图样式详情参见MapType
       }
       // //获取dom元素添加地图信息
       var map = new qq.maps.Map(document.getElementById("container"), myOptions);
       //第三部分
       //给定位的位置添加图片标注
-      var marker = new qq.maps.Marker({
+      // var marker = new qq.maps.Marker({
+      //   position: station,
+      //   map: map
+      // });
+      var markerStation = new qq.maps.Marker({
         position: station,
         map: map
       });
-      // var marker = new qq.maps.Marker({
-      //   position: myLatlng,
-      //   map: map
-      // });
-      //给定位的位置添加文本标注
-      var marker = new qq.maps.Label({
+      var markerStation = new qq.maps.Label({
         position: station,
         map: map,
-        content: '这是我当前的位置，偏差有点大，哈哈'
+        content: '昆明站点'
+      });
+      var markerCurr = new qq.maps.Marker({
+        position: myLatlng,
+        map: map
+      });
+      //给定位的位置添加文本标注
+      var markerCurr = new qq.maps.Label({
+        position: myLatlng,
+        map: map,
+        content: '当前的位置'
       });
 
     },

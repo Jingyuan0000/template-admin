@@ -2,17 +2,34 @@
   <div class="dashboard-container dashboard-container__home">
     <div class="upper-part">
       <div class="tag-container">
-        <div class="time-tag">
-          <div class="date-tag">
+        <!-- <div class="time-tag">
+          <div class="time-tag__utc">
             {{date}}
           </div>
-          {{timestamp}}
-        </div>
+          <div class="time-tag__bj">
+            {{date}}{{timestamp}}
+          </div>
+        </div> -->
+        <ul class="time-ul">
+          <li>
+            {{date}}{{timestamp}}
+          </li>
+          <li>
+            {{date}}{{timestamp}}
+          </li>
+        </ul>
         <ul>
+
           <li
             v-for="(item, index) in taglist"
             :class="'tag' + (index + 1)"
-          >{{item.name + ': ' + item.value}}
+          >
+            <span>
+              {{item.name}}
+            </span>
+            <h3>
+              {{ item.value}}
+            </h3>
           </li>
         </ul>
       </div>
@@ -177,6 +194,7 @@ export default {
       this.taglist = oleSocketData.slice(0, 8)
       this.timestamp = JSON.parse(localStorage.getItem('timestamp'))
       this.windDirection = JSON.parse(localStorage.getItem('windDirection'))
+      this.showPanel = true
       this.allNewSocket = JSON.parse(localStorage.getItem('allNewSocket'))
       this.windDir = JSON.parse(localStorage.getItem('windDir'))
       this.windSpeed = JSON.parse(localStorage.getItem('windSpeed'))
@@ -353,7 +371,7 @@ export default {
         currPressureH.push(this.historyData[j].pressure)
         currTmpH.push(this.historyData[j].env_tmp)
         let currTimeLine = this.historyData[j].time.substring(0, 2) + ':' + this.historyData[j].time.substring(2, 4)
-        currTimeLineH.push(currTimeLineH)
+        currTimeLineH.push(currTimeLine)
         currHumH.push(this.historyData[j].env_hum)
         currDewH.push(this.historyData[j].dew_point)
         currSpeedH.push(this.historyData[j].speed)
@@ -499,17 +517,28 @@ export default {
   display: flex;
   flex-wrap: wrap;
   margin: 0;
+  padding: 0;
+}
+.tag-container .time-ul {
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+}
+.tag-container .time-ul li {
+  width: 100%;
+  height: 120px;
 }
 .tag-container li {
-  width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20%;
   height: 120px;
   border: 1px solid #eee;
   list-style: none;
   margin: 0 20px 20px 0;
-  text-align: center;
-  line-height: 120px;
+  padding: 20px;
   border-radius: 10px;
-  // color: #fff;
   color: #827af3;
   opacity: 0.8;
   font-size: 22px;
@@ -518,6 +547,10 @@ export default {
     rgba(130, 122, 243, 0.2) 0%,
     rgba(180, 122, 243, 0.2) 100%
   );
+}
+.tag-container h3 {
+  font-size: 36px;
+  margin-top: 10px;
 }
 .lower-part {
   padding-bottom: 0;
@@ -627,24 +660,13 @@ export default {
   background: #28a745;
 }
 .panel-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  // margin-left: -50px;
+  margin-left: -200px;
 }
 .time-tag {
-  font-size: 36px;
   background: #eee;
-  padding: 18px 20px;
   border-radius: 10px;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
 }
-.date-tag {
-  font-size: 20px;
-  padding-right: 30px;
-}
+
 .load-content {
   .el-loading-text {
     font-size: 34px;
