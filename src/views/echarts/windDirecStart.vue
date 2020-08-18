@@ -17,6 +17,12 @@ export default {
         text: '风向',
         left: 'center'
       },
+      grid: {
+        bottom: 0,
+        right: 0,
+        left: 0
+
+      },
       series: [{
         type: 'gauge',
         center: ['50%', '50%'],
@@ -70,8 +76,8 @@ export default {
 
 <style scoped>
 .wind-gauge {
-  width: 280px;
-  height: 280px;
+  width: 260px;
+  height: 260px;
 }
 </style>
 

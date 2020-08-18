@@ -1,8 +1,95 @@
 <template>
-  <div
-    id="container"
-    style="width:1000px;height:838px;"
-  ></div>
+  <div class="map-page">
+    <div
+      id="txContainer"
+      style="width:1200px;height:850px;"
+    ></div>
+    <div class="map-table">
+      <table class="stationTable">
+        <tr>
+          <td class="row">站点: </td>
+          <td class="td-grid">昆明气象站</td>
+
+        </tr>
+        <tr>
+          <td class="row">地址: </td>
+          <td class="td-grid">昆明市盘龙区世博路8号</td>
+
+        </tr>
+        <tr>
+          <td class="row">观测要素：</td>
+          <td class="td-grid">风速、风向、温度、湿度、场面气压、修正海平面气压、降水、能见度、云高</td>
+        </tr>
+        <tr>
+          <td class="row">数据运营维护：</td>
+          <td class="td-grid">北京航空航天大学云南创新研究院综合交通大数据应用研究中心</td>
+        </tr>
+        <tr>
+          <td class="row">AWOS电台频率：</td>
+          <td class="td-grid"></td>
+        </tr>
+        <tr>
+          <td class="row">经度：</td>
+          <td class="td-grid">102.755235</td>
+        </tr>
+        <tr>
+          <td class="row">纬度：</td>
+          <td class="td-grid">25.074138</td>
+        </tr>
+        <tr>
+          <td class="row">联系电话：</td>
+          <td class="td-grid"></td>
+        </tr>
+        <tr>
+          <td class="row">官方网址：</td>
+          <td class="td-grid">http://ynii.buaa.edu.cn/info/1005/1556.htm</td>
+        </tr>
+      </table>
+
+      <table class="stationTable">
+        <tr>
+          <td class="row">站点: </td>
+          <td class="td-grid">测试气象站</td>
+
+        </tr>
+        <tr>
+          <td class="row">地址: </td>
+          <td class="td-grid"></td>
+
+        </tr>
+        <tr>
+          <td class="row">观测要素：</td>
+          <td class="td-grid">风速、风向、温度、湿度、场面气压、修正海平面气压、降水、能见度、云高</td>
+        </tr>
+        <tr>
+          <td class="row">数据运营维护：</td>
+          <td class="td-grid">北京航空航天大学云南创新研究院综合交通大数据应用研究中心</td>
+        </tr>
+        <tr>
+          <td class="row">AWOS电台频率：</td>
+          <td class="td-grid"></td>
+        </tr>
+        <tr>
+          <td class="row">经度：</td>
+          <td class="td-grid"></td>
+        </tr>
+        <tr>
+          <td class="row">纬度：</td>
+          <td class="td-grid"></td>
+        </tr>
+        <tr>
+          <td class="row">联系电话：</td>
+          <td class="td-grid"></td>
+        </tr>
+        <tr>
+          <td class="row">官方网址：</td>
+          <td class="td-grid"></td>
+        </tr>
+      </table>
+
+    </div>
+
+  </div>
 
 </template>
 
@@ -64,7 +151,7 @@ export default {
         mapTypeId: qq.maps.MapTypeId.SATELLITE  //设置地图样式详情参见MapType
       }
       // //获取dom元素添加地图信息
-      var map = new qq.maps.Map(document.getElementById("container"), myOptions);
+      var map = new qq.maps.Map(document.getElementById("txContainer"), myOptions);
       //第三部分
       //给定位的位置添加图片标注
       // var marker = new qq.maps.Marker({
@@ -119,7 +206,45 @@ export default {
   }
 }
 </script>
- <style>
+ <style scoped>
+.map-page {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 66px;
+}
+
+.stationTable {
+  border: 1px solid #ddd;
+  background: #fff;
+  border-collapse: collapse;
+  width: 500px;
+  margin-top: 20px;
+}
+.stationTable tr {
+  border: 1px solid #ddd;
+}
+　　 .stationTable tr,
+.stationTable tr td {
+  padding: 10px;
+  color: #336699;
+  text-align: left;
+}
+　　.stationTable {
+  font-size: 12px;
+  color: #71787e;
+}
+　　.stationTable tr td {
+  width: 130px;
+  /* height: 35px; */
+  /* line-height: 35px; */
+  box-sizing: border-box;
+  padding: 0 10px;
+}
+　　.stationTable tr td.row {
+  color: #393c3e;
+  border-right: 1px solid #999;
+}
+
 * {
   margin: 0;
   padding: 0;

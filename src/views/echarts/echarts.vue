@@ -51,7 +51,7 @@ export default {
       grid: {
         left: 70,
         bottom: 20,
-        top: 36
+        top: 30
 
       },
       series: [ // 驱动图表生成的数据内容数组，几条折现，数组中就会有几个对应对象，来表示对应的折线
@@ -99,7 +99,7 @@ export default {
       grid: {
         left: 70,
         bottom: 20,
-        top: 36
+        top: 30
 
 
       },
@@ -145,16 +145,16 @@ export default {
 .line-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 #myCharts {
   width: 600px;
-  height: 200px;
+  height: 180px;
 }
 #myCharts2 {
   width: 600px;
-  height: 200px;
-  margin-top: 40px;
+  height: 180px;
+  margin-top: 30px;
 }
 </style>

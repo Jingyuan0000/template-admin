@@ -2,28 +2,20 @@
   <div class="dashboard-container dashboard-container__home">
     <div class="upper-part">
       <div class="tag-container">
-        <!-- <div class="time-tag">
-          <div class="time-tag__utc">
-            {{date}}
-          </div>
-          <div class="time-tag__bj">
-            {{date}}{{timestamp}}
-          </div>
-        </div> -->
         <ul class="time-ul">
           <li>
-            {{date}}{{timestamp}}
+            <p class="time-ul__date">UTC时间：{{utcDate}}</p>
+            <p class="time-ul__time"> {{utcTime}}</p>
+
           </li>
           <li>
-            {{date}}{{timestamp}}
+            <p class="time-ul__date">北京时间：{{date}}</p>
+            <p class="time-ul__time"> {{timestamp}}</p>
           </li>
         </ul>
         <ul>
 
-          <li
-            v-for="(item, index) in taglist"
-            :class="'tag' + (index + 1)"
-          >
+          <li v-for="(item, index) in taglist">
             <span>
               {{item.name}}
             </span>
@@ -44,7 +36,7 @@
     </div>
     <div class="lower-part">
       <div class="classify-area">
-        <el-card class="classify-card">
+        <el-card class="classify-card cloud-class">
           <div
             slot="header"
             class="clearfix card1"
@@ -56,7 +48,7 @@
             :tableStyle="{ width: '500px' }"
           ></speedTable>
         </el-card>
-        <el-card class="classify-card">
+        <el-card class="classify-card wind-class">
           <div
             slot="header"
             class="clearfix card1"
@@ -68,7 +60,7 @@
             :tableStyle="{ width: '500px' }"
           ></windDirectTable>
         </el-card>
-        <el-card>
+        <el-card class="speed-class">
           <div
             slot="header"
             class="clearfix card1"
@@ -101,6 +93,11 @@
           />
         </el-col>
       </el-row>
+    </div>
+    <div class="report">
+      <div class="report-title">报文</div>
+      <div class="report-content"></div>
+
     </div>
   </div>
 </template>
@@ -163,6 +160,11 @@ export default {
       speedHistory: [],
       directionHistory: [],
       timeLine: [],
+      QNH: '',
+      altitude: '',
+      pressure: '',
+      utcDate: '',
+      utcTime: ''
     };
   },
 
@@ -186,6 +188,7 @@ export default {
     this.date = this.dateFormat('YYYY-mm-dd', currdate)
 
 
+
     if (!JSON.parse(localStorage.getItem('newSocketData'))) {
       showLoading()
       return
@@ -207,6 +210,10 @@ export default {
       this.dewHistory = JSON.parse(localStorage.getItem('dewHistory'))
       this.speedHistory = JSON.parse(localStorage.getItem('speedHistory'))
       this.directionHistory = JSON.parse(localStorage.getItem('directionHistory'))
+      this.QNH = JSON.parse(localStorage.getItem('QNH'))
+      this.utcDate = JSON.parse(localStorage.getItem('utcDate'))
+      this.utcTime = JSON.parse(localStorage.getItem('utcTime'))
+
       this.showLine = true
     }
   },
@@ -221,19 +228,32 @@ export default {
       // showLoading()
       this.sockets.listener.subscribe("relogin", msg => {
         // this.socketData = JSON.parse(msg)
-        console.log("msg" + msg)
         this.socketData = msg
         console.log("客户端已收到最新一条", this.socketData)
         this.dealOption()
       });
       this.sockets.listener.subscribe("lastTen", msg => {
-        console.log("msg" + msg)
         this.historyData = msg
         console.log("已收到最新十条", this.historyData)
 
         this.dealHistory()
         let currdate = new Date()
         this.date = this.dateFormat('YYYY-mm-dd', currdate)
+        let utc1 = Math.floor((new Date()).getTime() / 1000)
+
+
+        var y = currdate.getUTCFullYear();
+        var m = currdate.getUTCMonth();
+        var d = currdate.getUTCDate();
+        var h = currdate.getUTCHours();
+        var M = currdate.getUTCMinutes();
+        console.log('UTC 各部分时间', d, h, M)
+        this.utcDate = y + '-' + m + '-' + d
+        this.utcTime = h + ':' + M
+        localStorage.setItem('utcDate', JSON.stringify(this.utcDate))
+        localStorage.setItem('utcTime', JSON.stringify(this.utcTime))
+
+
 
       });
     },
@@ -253,6 +273,10 @@ export default {
       var socketObject = JSON.parse(this.socketData)
       // var socketObject = this.socketData
       this.windDirection = socketObject.wind_direction
+      this.altitude = socketObject.altitude
+      this.pressure = socketObject.pressure
+      this.QNH = (this.altitude && this.pressure ? this.pressure + this.altitude / 8.25 : '/').toFixed(2)
+      localStorage.setItem('QNH', JSON.stringify(this.QNH))
       localStorage.setItem('windDirection', JSON.stringify(this.windDirection))
       this.timestamp = socketObject.time.substring(0, 4)
       let fullstamp = this.timestamp.substring(0, 2) + ':' + this.timestamp.substring(2)
@@ -287,38 +311,31 @@ export default {
       let wd1 = {
         name: '两分钟平均风向(°)',
         prop: '',
-        value: 0
+        value: '/'
       }
       let wd2 = {
         name: '十分钟平均风向(°)',
         prop: '',
-        value: 0
+        value: '/'
       }
       currWindDir.push(wd1, wd2, this.newSocketData[8])
       this.windDir = currWindDir
       localStorage.setItem('windDir', JSON.stringify(this.windDir))
 
-      // let vb1 = {
-      //   name: '两分钟平均能见度(m)',
-      //   prop: '',
-      //   value: 0
-      // }
-      // this.visibility.push(vb1, this.newSocketData[11], this.newSocketData[12])
-
       let cld1 = {
         name: '云高(m)',
         prop: '',
-        value: 0
+        value: '/'
       }
       let cld2 = {
         name: '云量(%)',
         prop: '',
-        value: 0
+        value: '/'
       }
       let cld3 = {
         name: '云状',
         prop: '',
-        value: ''
+        value: '/'
       }
 
       currCloud.push(cld1, cld2, cld3)
@@ -327,30 +344,33 @@ export default {
 
 
       let light1 = {
+        name: '修正海平面气压 QNH',
+        prop: '',
+        value: this.QNH
+      }
+
+      let light2 = {
+        name: '1小时降雨量 (mm)',
+        prop: '',
+        value: '/'
+      }
+
+      let light3 = {
         name: '跑道灯光强度(Lux)',
         prop: '',
-        value: 0
-      }
-      let light2 = {
-        name: '噪声(B)',
-        prop: '',
-        value: 0
-      }
-      let light3 = {
-        name: 'CO2(ppm)',
-        prop: '',
-        value: 0
+        value: '/'
       }
       let light4 = {
-        name: 'PM2.5(ug/m³)',
+        name: '跑道视程 RVR',
         prop: '',
-        value: 0
+        value: '/'
       }
       let light5 = {
-        name: 'PM10(ug/m³)',
+        name: '气象光学视程 MOR',
         prop: '',
-        value: 0
+        value: '/'
       }
+
       currAllSocket.push(this.newSocketData[0], this.newSocketData[1], this.newSocketData[2],
         this.newSocketData[3], this.newSocketData[4], this.newSocketData[9], this.newSocketData[10], light1, light2, light3, light4, light5)
       this.allNewSocket = currAllSocket
@@ -389,7 +409,7 @@ export default {
         localStorage.setItem('tmpHistory', JSON.stringify(this.tmpHistory))
       }
       localStorage.setItem('pressureHistory', JSON.stringify(this.pressureHistory))
-      // localStorage.setItem('timeLine', JSON.stringify(this.timeLine))
+      localStorage.setItem('timeLine', JSON.stringify(this.timeLine))
       localStorage.setItem('humHistory', JSON.stringify(this.humHistory))
       localStorage.setItem('dewHistory', JSON.stringify(this.dewHistory))
       localStorage.setItem('speedHistory', JSON.stringify(this.speedHistory))
@@ -413,7 +433,6 @@ export default {
           fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
         };
       };
-      console.log('fmt', fmt)
       return fmt;
     },
 
@@ -426,12 +445,9 @@ export default {
         })
       }
       let currTag = {}
-      console.log("item", v)
       let currArr = v.split(":")
-      console.log("currArr", currArr)
       currTag.name = currArr[0];
       currTag.value = parseInt(currArr[1])
-      console.log("currTag", currTag)
       this.dynamicTags.push(currTag)
       if (this.dynamicTags.length > 1) {
         this.dynamicTags = this.unique(this.dynamicTags)
@@ -448,7 +464,6 @@ export default {
     showSelect() {
       this.selectVisible = true
       this.$nextTick(_ => {
-        console.log("lll", this.$refs.saveSelectInput.value)
         // this.$refs.saveSelectInput.value.focus()
       });
     },
@@ -461,7 +476,6 @@ export default {
         obj[next.name] ? "" : (obj[next.name] = true && item.push(next))
         return item
       }, [])
-      console.log("unique", arr)
       return arr
     },
 
@@ -476,7 +490,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .dashboard {
   &-container {
     margin: 30px;
@@ -498,46 +512,66 @@ export default {
 }
 .upper-part {
   padding-bottom: 0;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   // box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   border: 1px solid #ebeef5;
   background-color: #fff;
   color: #303133;
   border-radius: 10px;
   display: flex;
-  justify-content: flex-start;
-  padding: 20px 10px;
+  justify-content: flex-end;
+  padding: 10px 20px;
   margin-top: 20px;
 }
 .tag-container {
   display: flex;
-  padding: 20px;
+  padding: 0 10px;
+  margin-right: -244px;
 }
 .tag-container ul {
   display: flex;
   flex-wrap: wrap;
-  margin: 0;
   padding: 0;
 }
 .tag-container .time-ul {
   display: flex;
   flex-direction: column;
-  margin-right: 20px;
+  margin-right: 50px;
 }
 .tag-container .time-ul li {
   width: 100%;
-  height: 120px;
+  // height: 100px;
+  background: #eee;
+  color: #336699;
+
+  border: 1px solid #eee;
+  list-style: none;
+  margin: 0 20px 10px 0;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 22px;
+}
+
+.tag-container .time-ul li p {
+  margin: 0;
+  padding-bottom: 14px;
+}
+.time-ul__date {
+  font-size: 18px;
+}
+.time-ul__time {
+  font-size: 30px;
 }
 .tag-container li {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 20%;
-  height: 120px;
+  justify-content: center;
   border: 1px solid #eee;
   list-style: none;
-  margin: 0 20px 20px 0;
-  padding: 20px;
+  margin: 0 20px 10px 0;
+  padding: 10px;
   border-radius: 10px;
   color: #827af3;
   opacity: 0.8;
@@ -550,7 +584,8 @@ export default {
 }
 .tag-container h3 {
   font-size: 36px;
-  margin-top: 10px;
+  padding-top: 10px;
+  margin: 0;
 }
 .lower-part {
   padding-bottom: 0;
@@ -562,10 +597,10 @@ export default {
   display: flex;
   justify-content: space-evenly;
   padding: 20px 10px;
-  margin-top: 20px;
+  // margin-top: 10px;
 }
 .param-area {
-  margin-top: 30px;
+  margin-top: 5px;
 }
 .el-row {
   margin-bottom: 20px;
@@ -594,10 +629,8 @@ export default {
   line-height: 30px;
   padding-top: 0;
   padding-bottom: 0;
-  // margin-bottom: 80px;
 }
 .input-new-tag {
-  // margin-left: 10px;
   vertical-align: bottom;
 }
 
@@ -624,6 +657,7 @@ export default {
   margin-top: 10px;
   margin-bottom: 40px;
 }
+
 .tag1 {
   background: #17a2b8;
   // background: linear-gradient(
@@ -660,7 +694,7 @@ export default {
   background: #28a745;
 }
 .panel-container {
-  margin-left: -200px;
+  margin-right: -20px;
 }
 .time-tag {
   background: #eee;
@@ -689,5 +723,52 @@ export default {
 .card1 {
   // background: #17a2b8;
   padding: 0;
+}
+.classify-card .el-card__header {
+  padding: 12px 20px;
+}
+.classify-card .el-card__body {
+  padding: 10px 20px !important;
+}
+.cloud-class .el-card__header {
+  background-color: #3dbb58;
+  color: #fff;
+  text-align: center;
+  font-size: 18px;
+}
+.wind-class .el-card__header {
+  background-color: #17a2b8;
+  color: #fff;
+  text-align: center;
+  font-size: 18px;
+}
+.speed-class .el-card__header {
+  // background-color: #ddd;
+  background: #ffc107;
+  color: #fff;
+  text-align: center;
+  font-size: 18px;
+}
+
+.report {
+  border: 1px solid #ebeef5;
+  // background-color: #fff;
+  color: #303133;
+  border-radius: 10px;
+  display: flex;
+  justify-content: flex-start;
+  padding: 5px 10px 10px 10px;
+  margin-top: -10px;
+}
+.report-title {
+  width: 5%;
+  font-size: 22px;
+  color: #336699;
+}
+.report-content {
+  background: #827af3;
+  width: 95%;
+  height: 40px;
+  opacity: 0.6;
 }
 </style>

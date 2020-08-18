@@ -1,17 +1,18 @@
 const sensorName = [
-  { name: '环境温度(℃)', prop: 'env_tmp' },
+  { name: '环境温度 T(℃)', prop: 'env_tmp' },
   { name: '环境湿度(%RH)', prop: 'env_hum' },
-  { name: '露点(℃)', prop: 'dew_point' },
-  { name: '气压(hPa)', prop: 'pressure' },
-  { name: '海拔(m)', prop: 'altitude' },
+  { name: '露点温度 Td(℃)', prop: 'dew_point' },
   { name: '风速(m/s)', prop: 'speed' },
   { name: '两分钟平均风速(m/s)', prop: 'avg_speed2' },
   { name: '十分钟平均风速(m/s)', prop: 'avg_speed10' },
   { name: '风向(°)', prop: 'wind_direction' },
   { name: '电池电压(V)', prop: 'battery_voltage' },
   { name: '雨量日累计(mm)', prop: 'rain_total' },
-  { name: '能见度(m)', prop: 'visibility' },
-  { name: '十分钟平均能见度(m)', prop: 'avg_visibility10' }
+  { name: '能见度 VIS(m)', prop: 'visibility' },
+  { name: '场面气压 QFE(hPa)', prop: 'pressure' },
+
+  { name: '十分钟平均能见度(m)', prop: 'avg_visibility10' },
+  { name: '海拔(m)', prop: 'altitude' },
 ];
 // const sensorName = [
 //   { name: '辐射1_累计(J/m²)', prop: 'radiation1_total' },

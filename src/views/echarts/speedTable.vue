@@ -52,7 +52,7 @@ export default {
   height: 35px;
   line-height: 35px;
   box-sizing: border-box;
-  padding: 10px;
+  padding: 0 10px;
 }
 　　.classify tr td.column {
   background-color: #eff3f6;
@@ -63,8 +63,7 @@ export default {
   opacity: 0.9;
   /* color: #fff !important; */
   text-align: center;
-  padding: 4px 6px;
-  height: 20px;
+  height: 16px;
 }
 
 .tag1 {
@@ -103,7 +102,8 @@ export default {
 .tag88 {
   /* background: #28a745; */
   color: #fd7e14 !important;
-  font-size: 24px;
+  font-size: 30px;
+  font-weight: bold;
 }
 
 .tag-even1 {

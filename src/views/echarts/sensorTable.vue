@@ -8,10 +8,7 @@
       <td class="column">{{tableData[index*2-2].name}}</td>
       <td class="td-grid tag8">{{tableData[index*2-2].value}}</td>
       <td class="column">{{tableData[index*2-1] !== undefined ? tableData[index*2-1].name : ''}}</td>
-      <td
-        :class="'tag-even' + (index+1)"
-        class="td-grid"
-      >{{tableData[index*2-1] !== undefined ? tableData[index*2-1].value : ''}}</td>
+      <td class="td-grid tag8">{{tableData[index*2-1] !== undefined ? tableData[index*2-1].value : ''}}</td>
     </tr>
   </table>
   <!-- <table
@@ -59,8 +56,9 @@ export default {
 .mailTable tr,
 .mailTable tr td {
   /* border: 1px solid #e6eaee; */
-  padding: 18px;
+  padding: 12px;
   color: #336699;
+  text-align: center;
 }
 　　.mailTable {
   font-size: 12px;
@@ -69,8 +67,8 @@ export default {
 　　.mailTable tr td {
   /* border: 1px solid #e6eaee; */
   width: 130px;
-  height: 35px;
-  line-height: 35px;
+  /* height: 35px; */
+  /* line-height: 35px; */
   box-sizing: border-box;
   padding: 0 10px;
 }
@@ -114,6 +112,8 @@ export default {
 
 .tag8 {
   background: #28a745;
+  font-size: 18px;
+  font-weight: bold;
 }
 .td-grid {
   opacity: 0.9;

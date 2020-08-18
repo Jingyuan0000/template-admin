@@ -82,6 +82,7 @@ export default {
       series: [ // 驱动图表生成的数据内容数组，几条折现，数组中就会有几个对应对象，来表示对应的折线
         {
           name: '气压',
+          connectNulls: true,
           type: 'line', // pie->饼状图  line->折线图  bar->柱状图
           // data: [1, 3, 4, 6, 9, 10],
           data: this.pressureHistory,
@@ -131,6 +132,7 @@ export default {
       series: [ // 驱动图表生成的数据内容数组，几条折现，数组中就会有几个对应对象，来表示对应的折线
         {
           name: '风速',
+          connectNulls: true,
           type: 'line', // pie->饼状图  line->折线图  bar->柱状图
           // data: [1, 3, 4, 6, 9, 10],
           data: this.speedHistory,
@@ -180,6 +182,8 @@ export default {
       series: [ // 驱动图表生成的数据内容数组，几条折现，数组中就会有几个对应对象，来表示对应的折线
         {
           name: '风向',
+          connectNulls: true,
+
           type: 'line', // pie->饼状图  line->折线图  bar->柱状图
           // data: [1, 3, 4, 6, 9, 10],
           data: this.directionHistory,
