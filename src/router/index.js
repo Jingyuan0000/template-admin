@@ -87,17 +87,17 @@ export const constantRoutes = [
       meta: { title: '地图定位', icon: 'map' }
     }]
   },
-  {
-    path: '/message',
-    component: Layout,
-    redirect: '/message',
-    children: [{
-      path: 'index',
-      name: 'Broadcast',
-      component: () => import('@/views/broadcast/index'),
-      meta: { title: '气象报文生成', icon: 'trumpet', role: ['super_editor'] }
-    }]
-  },
+  // {
+  //   path: '/message',
+  //   component: Layout,
+  //   redirect: '/message',
+  //   children: [{
+  //     path: 'index',
+  //     name: 'Broadcast',
+  //     component: () => import('@/views/broadcast/index'),
+  //     meta: { title: '气象报文生成', icon: 'trumpet', role: ['super_editor'] }
+  //   }]
+  // },
   // {
   //   path: '/nested',
   //   component: Layout,

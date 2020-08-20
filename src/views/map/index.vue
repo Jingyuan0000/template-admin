@@ -8,82 +8,82 @@
       <table class="stationTable">
         <tr>
           <td class="row">站点: </td>
-          <td class="td-grid">昆明气象站</td>
+          <td>昆明气象站</td>
 
         </tr>
         <tr>
           <td class="row">地址: </td>
-          <td class="td-grid">昆明市盘龙区世博路8号</td>
+          <td>昆明市盘龙区世博路8号</td>
 
         </tr>
         <tr>
           <td class="row">观测要素：</td>
-          <td class="td-grid">风速、风向、温度、湿度、场面气压、修正海平面气压、降水、能见度、云高</td>
+          <td>风速、风向、温度、湿度、场面气压、修正海平面气压、降水、能见度、云高</td>
         </tr>
         <tr>
           <td class="row">数据运营维护：</td>
-          <td class="td-grid">北京航空航天大学云南创新研究院综合交通大数据应用研究中心</td>
+          <td>北京航空航天大学云南创新研究院综合交通大数据应用研究中心</td>
         </tr>
         <tr>
           <td class="row">AWOS电台频率：</td>
-          <td class="td-grid"></td>
+          <td></td>
         </tr>
         <tr>
           <td class="row">经度：</td>
-          <td class="td-grid">102.755235</td>
+          <td>102.755235</td>
         </tr>
         <tr>
           <td class="row">纬度：</td>
-          <td class="td-grid">25.074138</td>
+          <td>25.074138</td>
         </tr>
         <tr>
           <td class="row">联系电话：</td>
-          <td class="td-grid"></td>
+          <td></td>
         </tr>
         <tr>
           <td class="row">官方网址：</td>
-          <td class="td-grid">http://ynii.buaa.edu.cn/info/1005/1556.htm</td>
+          <td>http://ynii.buaa.edu.cn/info/1005/1556.htm</td>
         </tr>
       </table>
 
       <table class="stationTable">
         <tr>
           <td class="row">站点: </td>
-          <td class="td-grid">测试气象站</td>
+          <td>测试气象站</td>
 
         </tr>
         <tr>
           <td class="row">地址: </td>
-          <td class="td-grid"></td>
+          <td></td>
 
         </tr>
         <tr>
           <td class="row">观测要素：</td>
-          <td class="td-grid">风速、风向、温度、湿度、场面气压、修正海平面气压、降水、能见度、云高</td>
+          <td>风速、风向、温度、湿度、场面气压、修正海平面气压、降水、能见度、云高</td>
         </tr>
         <tr>
           <td class="row">数据运营维护：</td>
-          <td class="td-grid">北京航空航天大学云南创新研究院综合交通大数据应用研究中心</td>
+          <td>北京航空航天大学云南创新研究院综合交通大数据应用研究中心</td>
         </tr>
         <tr>
           <td class="row">AWOS电台频率：</td>
-          <td class="td-grid"></td>
+          <td></td>
         </tr>
         <tr>
           <td class="row">经度：</td>
-          <td class="td-grid"></td>
+          <td></td>
         </tr>
         <tr>
           <td class="row">纬度：</td>
-          <td class="td-grid"></td>
+          <td></td>
         </tr>
         <tr>
           <td class="row">联系电话：</td>
-          <td class="td-grid"></td>
+          <td></td>
         </tr>
         <tr>
           <td class="row">官方网址：</td>
-          <td class="td-grid"></td>
+          <td></td>
         </tr>
       </table>
 
@@ -94,6 +94,7 @@
 </template>
 
 <script>
+import { showLoading, hideLoading } from '../../utils/loading'
 
 var positionNum = 0;
 var options = { timeout: 8000 };
@@ -122,6 +123,7 @@ export default {
       var geolocation = new qq.maps.Geolocation("2AHBZ-LIIKF-6WMJZ-N53VW-TZ5LJ-DYFHP", "sensor-web");
       // geolocation.getIpLocation(this.showPosition, this.showErr);
       geolocation.getLocation(this.showPosition, this.showErr);//或者用getLocation精确度比较高
+
     },
     showPosition(position) {
       console.log(position);
@@ -177,16 +179,12 @@ export default {
         map: map,
         content: '当前的位置'
       });
+      hideLoading()
 
     },
 
-    // 前端定位
-    // showErr() {
-    //   positionNum++
-    //   document.getElementById("demo").innerHTML += "序号：" + positionNum
-    //   document.getElementById("demo").appendChild(document.createElement('p')).innerHTML = "定位失败！"
-    //   document.getElementById("pos-area").scrollTop = document.getElementById("pos-area").scrollHeight
-    // },
+
+
 
     showWatchPosition() {
       // document.getElementById("demo").innerHTML += "开始监听位置！<br /><br />"
@@ -201,7 +199,8 @@ export default {
     }
   },
   mounted() {
-    this.getMyLocation();
+    this.getMyLocation()
+    showLoading()
 
   }
 }

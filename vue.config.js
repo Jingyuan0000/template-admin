@@ -49,6 +49,8 @@ module.exports = {
       },
       '/socket.io': {
         target: 'http://127.0.0.1:8080/login',
+        // target: 'http://47.92.220.113/login',
+
         ws: true,
         changeOrigin: true
       }

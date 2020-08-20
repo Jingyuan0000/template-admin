@@ -23,6 +23,7 @@ export default {
         left: 0
 
       },
+
       series: [{
         type: 'gauge',
         center: ['50%', '50%'],
@@ -38,28 +39,41 @@ export default {
         splitNumber: 12,
         axisLine: {
           show: true,
-          length: 20
+          length: 20,
+          lineStyle: {
+            color: [[0.2, '#6495ed'], [0.8, '#6495ed'], [1, '#6495ed']],
+            width: 16
+          }
+
+
+        },
+        splitLine: {
+          length: '20%',
+          lineStyle: {
+            color: '#336699'
+          }
         },
         axisTick: {
           show: true,
-          length: 6,
           lineStyle: {
-            color: '#333'
+            color: '#336699'
           }
         },
         axisLabel: {
           show: true,
-          fontSize: 10
+          fontSize: 10,
+          distance: 4
         },
         poiter: {
-          length: '40%',
-          width: 4
+          length: '20%',
+          width: 1
         },
         detail: {          formatter: '{value}%',
           textStyle: {
-            'fontSize': 16
+            'fontSize': 16,
+            'color': '#B03A5B'
           },
-          offsetCenter: ['4%', '20%']
+          offsetCenter: ['4%', '-34%']
         }
 
       }]

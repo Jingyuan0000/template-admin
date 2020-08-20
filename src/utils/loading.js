@@ -7,7 +7,7 @@ const startLoading = () => {
   loading = Loading.service({
     lock: true,
     text: '准备数据中……',
-    background: 'rgba(0, 0, 0, 0.9)',
+    background: 'rgba(221,221,221, 1)',
     customClass: 'load-content'
 
   });

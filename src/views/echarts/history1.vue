@@ -56,7 +56,8 @@ export default {
         type: 'category',
         boundaryGap: false,
         // data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        data: this.timeline
+        data: this.timeline,
+        inverse: true
       }],
       yAxis: [{ // y轴坐标数据
         type: 'value',
@@ -86,7 +87,23 @@ export default {
           // data: [1, 3, 4, 6, 9, 10],
           data: this.tmp,
           lineStyle: {
-            color: 'rgb(220, 87, 18)'
+            color: '#17a2b8'
+          },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 1,
+              x2: 0,
+              y2: 0,
+              colorStops: [{
+                offset: 0, color: '#fff' // 0% 处的颜色
+              }, {
+                offset: 1, color: '#17a2b8' // 100% 处的颜色
+              }],
+              global: false // 缺省为 false
+            }
+
           }
         }
       ]    }
@@ -106,7 +123,8 @@ export default {
         type: 'category',
         boundaryGap: false,
         // data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        data: this.timeline
+        data: this.timeline,
+        inverse: true
       }],
       yAxis: [{ // y轴坐标数据
         type: 'value',
@@ -137,7 +155,23 @@ export default {
           // data: [1, 3, 4, 6, 9, 10],
           data: this.hum,
           lineStyle: {
-            color: 'rgb(229, 131, 8)'
+            color: '#6f42c1'
+          },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 1,
+              x2: 0,
+              y2: 0,
+              colorStops: [{
+                offset: 0, color: '#fff' // 0% 处的颜色
+              }, {
+                offset: 1, color: '#6f42c1' // 100% 处的颜色
+              }],
+              global: false // 缺省为 false
+            }
+
           }
         }
 
@@ -159,7 +193,8 @@ export default {
         type: 'category',
         boundaryGap: false,
         // data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        data: this.timeline
+        data: this.timeline,
+        inverse: true
       }],
       yAxis: [{ // y轴坐标数据
         type: 'value',
@@ -189,7 +224,23 @@ export default {
           // data: [1, 3, 4, 6, 9, 10],
           data: this.dew,
           lineStyle: {
-            color: 'rgb(220, 87, 18)'
+            color: '#e83e8c'
+          },
+          areaStyle: {
+            color: {
+              type: 'linear',
+              x: 0,
+              y: 1,
+              x2: 0,
+              y2: 0,
+              colorStops: [{
+                offset: 0, color: '#fff' // 0% 处的颜色
+              }, {
+                offset: 1, color: '#e83e8c' // 100% 处的颜色
+              }],
+              global: false // 缺省为 false
+            }
+
           }
         }
       ]

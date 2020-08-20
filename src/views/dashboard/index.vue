@@ -14,19 +14,17 @@
           </li>
         </ul>
         <ul>
-
           <li v-for="(item, index) in taglist">
             <span>
               {{item.name}}
             </span>
             <h3>
-              {{ item.value}}
+              {{item.value}}
             </h3>
           </li>
         </ul>
       </div>
       <div class="panel-container">
-
         <windDirecStart
           :direction1="windDirection"
           v-if="showPanel"
@@ -95,7 +93,7 @@
       </el-row>
     </div>
     <div class="report">
-      <div class="report-title">报文</div>
+      <div class="report-title">报文 METAR</div>
       <div class="report-content"></div>
 
     </div>
@@ -103,14 +101,12 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
 import windDirecStart from "../echarts/windDirecStart"
-import echarts from "../echarts/echarts"
-import sensorTable from "../echarts/sensorTable"
+import echarts from "../echarts/echarts" // 右下折线图
+import sensorTable from "../echarts/sensorTable" // 下方中间表格
 import speedTable from "../echarts/speedTable"
 import windDirectTable from "../echarts/windDirectTable"
 import cloudTable from "../echarts/cloudTable"
-
 import SocketIO from "socket.io-client"
 import { sensorName } from "../../utils/sensor"
 import { showLoading, hideLoading } from '../../utils/loading'
@@ -132,24 +128,18 @@ export default {
       styleObject: {},
       s_showByRow: true,
       getDataUrl: "http://127.0.0.1:8500/login",
-      sensors: [],
-      windDirection: '', // 上方右边风向仪表盘
-      loading: false,
+      windDirection: '', // 右上方风向仪表盘
       showPanel: false,
-      showLine: false,
-      dynamicTags: [],
-      selectVisible: false,
-      selectValue: "",
+      showLine: false, // 右下方折线图
       sensorName: sensorName,
       taglist: [], // 上方主要气象要素
-      timestamp: '',
-      socketData: [],
-      newSocketData: [],
+      timestamp: '', // 传来的时间
+      socketData: [], // 最新一条所有数据
+      newSocketData: [], // 有传感器的数据
       historyData: [],
       date: '',
       windSpeed: [], // 下方左边风速区
       windDir: [], // 下方左边风向区
-      // visibility: [],
       cloud: [], // 下方左边云区
       allNewSocket: [], // 下方中间综合数据
 
@@ -188,7 +178,7 @@ export default {
     this.date = this.dateFormat('YYYY-mm-dd', currdate)
 
 
-
+    // 判断localStorage 是否有数据
     if (!JSON.parse(localStorage.getItem('newSocketData'))) {
       showLoading()
       return
@@ -202,6 +192,7 @@ export default {
       this.windDir = JSON.parse(localStorage.getItem('windDir'))
       this.windSpeed = JSON.parse(localStorage.getItem('windSpeed'))
       this.cloud = JSON.parse(localStorage.getItem('cloud'))
+
 
       this.pressureHistory = JSON.parse(localStorage.getItem('pressureHistory'))
       this.tmpHistory = JSON.parse(localStorage.getItem('tmpHistory'))
@@ -239,17 +230,24 @@ export default {
         this.dealHistory()
         let currdate = new Date()
         this.date = this.dateFormat('YYYY-mm-dd', currdate)
-        let utc1 = Math.floor((new Date()).getTime() / 1000)
-
-
         var y = currdate.getUTCFullYear();
         var m = currdate.getUTCMonth();
         var d = currdate.getUTCDate();
         var h = currdate.getUTCHours();
         var M = currdate.getUTCMinutes();
-        console.log('UTC 各部分时间', d, h, M)
-        this.utcDate = y + '-' + m + '-' + d
-        this.utcTime = h + ':' + M
+        console.log('UTC 各部分时间', m, d, h, M)
+        if (m < 10) {
+          this.utcDate = y + '-' + '0' + (m + 1) + '-' + d
+        } else {
+          this.utcDate = y + '-' + (m + 1) + '-' + d
+        }
+        if (h < 10) {
+          this.utcTime = '0' + h + ':' + M
+        } else {
+          this.utcTime = h + ':' + M
+
+        }
+
         localStorage.setItem('utcDate', JSON.stringify(this.utcDate))
         localStorage.setItem('utcTime', JSON.stringify(this.utcTime))
 
@@ -264,7 +262,6 @@ export default {
       this.taglist = []
       this.windSpeed = []
       this.windDir = []
-      this.visibility = []
       this.cloud = []
       let currAllSocket = []
       let currWindSpeed = []
@@ -303,7 +300,7 @@ export default {
 
       this.taglist = this.newSocketData.slice(0, 8)
 
-      currWindSpeed.push(this.newSocketData[5], this.newSocketData[6], this.newSocketData[7])
+      currWindSpeed.push(this.newSocketData[4], this.newSocketData[5], this.newSocketData[3])
       this.windSpeed = currWindSpeed
       localStorage.setItem('windSpeed', JSON.stringify(this.windSpeed))
 
@@ -318,7 +315,7 @@ export default {
         prop: '',
         value: '/'
       }
-      currWindDir.push(wd1, wd2, this.newSocketData[8])
+      currWindDir.push(wd1, wd2, this.newSocketData[6])
       this.windDir = currWindDir
       localStorage.setItem('windDir', JSON.stringify(this.windDir))
 
@@ -434,50 +431,8 @@ export default {
         };
       };
       return fmt;
-    },
+    }
 
-    //点选添加气象要素
-    handleSelectConfirm(v) {
-      if (this.dynamicTags.length >= 8) {
-        this.$message({
-          message: '只能选择八个气象要素',
-          type: 'warning'
-        })
-      }
-      let currTag = {}
-      let currArr = v.split(":")
-      currTag.name = currArr[0];
-      currTag.value = parseInt(currArr[1])
-      this.dynamicTags.push(currTag)
-      if (this.dynamicTags.length > 1) {
-        this.dynamicTags = this.unique(this.dynamicTags)
-      }
-    },
-
-    // 删除标签
-    handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
-      localStorage.setItem("dynamicTags", JSON.stringify(this.dynamicTags))
-    },
-
-    // 显示下拉列表
-    showSelect() {
-      this.selectVisible = true
-      this.$nextTick(_ => {
-        // this.$refs.saveSelectInput.value.focus()
-      });
-    },
-
-
-    // 气象标签去重
-    unique(arr) {
-      var obj = {}
-      arr = arr.reduce(function (item, next) {
-        obj[next.name] ? "" : (obj[next.name] = true && item.push(next))
-        return item
-      }, [])
-      return arr
-    },
 
 
 
@@ -526,7 +481,7 @@ export default {
 .tag-container {
   display: flex;
   padding: 0 10px;
-  margin-right: -244px;
+  margin-right: -242px;
 }
 .tag-container ul {
   display: flex;
@@ -571,7 +526,7 @@ export default {
   border: 1px solid #eee;
   list-style: none;
   margin: 0 20px 10px 0;
-  padding: 10px;
+  padding: 8px;
   border-radius: 10px;
   color: #827af3;
   opacity: 0.8;
@@ -694,7 +649,7 @@ export default {
   background: #28a745;
 }
 .panel-container {
-  margin-right: -20px;
+  margin-right: -32px;
 }
 .time-tag {
   background: #eee;
@@ -704,7 +659,8 @@ export default {
 .load-content {
   .el-loading-text {
     font-size: 34px;
-    color: #fff;
+    padding-top: 30px;
+    color: #336699;
   }
 }
 .classify-card {
@@ -751,8 +707,6 @@ export default {
 }
 
 .report {
-  border: 1px solid #ebeef5;
-  // background-color: #fff;
   color: #303133;
   border-radius: 10px;
   display: flex;
@@ -761,13 +715,13 @@ export default {
   margin-top: -10px;
 }
 .report-title {
-  width: 5%;
+  width: 10%;
   font-size: 22px;
   color: #336699;
 }
 .report-content {
   background: #827af3;
-  width: 95%;
+  width: 90%;
   height: 40px;
   opacity: 0.6;
 }

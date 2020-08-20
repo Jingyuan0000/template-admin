@@ -31,7 +31,8 @@ export default {
       xAxis: [{ // x轴坐标数据
         type: 'category',
         boundaryGap: false,
-        data: this.timeline
+        data: this.timeline,
+        inverse: true
       }],
       yAxis: [{ // y轴坐标数据
         type: 'value',
@@ -79,7 +80,8 @@ export default {
       xAxis: [{ // x轴坐标数据
         type: 'category',
         boundaryGap: false,
-        data: this.timeline
+        data: this.timeline,
+        inverse: true
       }],
       yAxis: [{ // y轴坐标数据
         type: 'value',
