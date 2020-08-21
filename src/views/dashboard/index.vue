@@ -341,13 +341,13 @@ export default {
 
 
       let light1 = {
-        name: '修正海平面气压 QNH',
+        name: '修正海平面气压 QNH(hPa)',
         prop: '',
         value: this.QNH
       }
 
       let light2 = {
-        name: '1小时降雨量 (mm)',
+        name: '1小时降雨量(mm)',
         prop: '',
         value: '/'
       }
@@ -358,12 +358,12 @@ export default {
         value: '/'
       }
       let light4 = {
-        name: '跑道视程 RVR',
+        name: '跑道视程 RVR(m)',
         prop: '',
         value: '/'
       }
       let light5 = {
-        name: '气象光学视程 MOR',
+        name: '气象光学视程 MOR(m)',
         prop: '',
         value: '/'
       }

@@ -37,7 +37,7 @@ export default {
       yAxis: [{ // y轴坐标数据
         type: 'value',
         axisLabel: {
-          formatter: '{value} °C'
+          formatter: '{value} hPa'
         },
         interval: 2,
         // min: 795,

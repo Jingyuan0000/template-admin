@@ -68,7 +68,7 @@ export default {
           length: '20%',
           width: 1
         },
-        detail: {          formatter: '{value}%',
+        detail: {          formatter: '{value}°',
           textStyle: {
             'fontSize': 16,
             'color': '#B03A5B'
